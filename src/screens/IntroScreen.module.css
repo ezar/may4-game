@@ -166,11 +166,73 @@
 
 .sideBtn.active .sideTagline { opacity: 0.8; }
 
+/* ── Mode selector ──────────────────────────── */
+.modeSection {
+  width: 100%;
+  flex-shrink: 0;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.modes {
+  display: flex;
+  gap: 10px;
+}
+
+.modeBtn {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 8px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.35);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.modeBtn.modeActive {
+  border-color: var(--side-color);
+  color: var(--side-color);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--side-color) 30%, transparent),
+              0 0 20px color-mix(in srgb, var(--side-color) 18%, transparent);
+}
+
+.modeMoji {
+  font-size: 26px;
+  transition: transform 0.25s ease;
+}
+
+.modeBtn.modeActive .modeMoji {
+  transform: scale(1.15);
+}
+
+.modeName {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  transition: color 0.25s;
+}
+
+.modeDesc {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 300;
+  opacity: 0.5;
+  transition: opacity 0.25s;
+}
+
+.modeBtn.modeActive .modeDesc { opacity: 0.75; }
+
 /* ── How to play ────────────────────────────── */
 .howTo {
   width: 100%;
   flex-shrink: 0;
-  animation: fadeUp 0.8s 0.25s ease both;
+  animation: fadeUp 0.8s 0.3s ease both;
 }
 
 .tabs {

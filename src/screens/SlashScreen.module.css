@@ -1,0 +1,71 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #03030f;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── HUD ────────────────────────────────────── */
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+  background: linear-gradient(to bottom, rgba(3,3,15,0.7) 0%, transparent 100%);
+}
+
+.lives {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.lifeOn {
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px #FF1744);
+  transition: filter 0.3s;
+}
+
+.lifeOff {
+  font-size: 20px;
+  opacity: 0.15;
+  filter: none;
+}
+
+.score {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 6vw, 32px);
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+
+.combo {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 4.5vw, 22px);
+  color: var(--side-color);
+  text-shadow: 0 0 14px var(--side-color);
+  letter-spacing: 0.06em;
+  animation: comboPop 0.25s ease both;
+}
+
+@keyframes comboPop {
+  from { transform: scale(1.4); opacity: 0.6; }
+  to   { transform: scale(1);   opacity: 1; }
+}
