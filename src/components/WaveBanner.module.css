@@ -1,0 +1,41 @@
+.banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  text-align: center;
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.banner.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: bannerAnim 2.6s ease forwards;
+}
+
+.sub {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--side-color);
+  letter-spacing: 0.2em;
+  margin-bottom: 6px;
+  text-shadow: 0 0 20px var(--side-color);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 5vw, 28px);
+  color: #fff;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 30px rgba(255,255,255,0.5);
+}
+
+@keyframes bannerAnim {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  15%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  70%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); }
+}

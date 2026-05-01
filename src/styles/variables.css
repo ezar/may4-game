@@ -1,0 +1,16 @@
+:root {
+  --gold:       #FFD700;
+  --blue:       #00BFFF;
+  --red:        #FF1744;
+  --green:      #00E676;
+  --yellow:     #FFEB3B;
+  --orange:     #FF6B00;
+  --dark:       #03030f;
+  --dark2:      #0a0a1a;
+  --side-color: var(--blue);
+
+  --font-display: 'Orbitron', sans-serif;
+  --font-body:    'Exo 2', sans-serif;
+
+  --hud-h: 64px;
+}
