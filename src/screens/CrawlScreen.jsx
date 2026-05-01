@@ -94,7 +94,7 @@ export default function CrawlScreen({ onDone }) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 4200)
-    const t2 = setTimeout(skip, 27000)
+    const t2 = setTimeout(skip, 44000)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [skip])
 

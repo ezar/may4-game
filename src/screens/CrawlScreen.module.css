@@ -76,7 +76,7 @@
   width: 62%;
   left: 19%;
   text-align: center;
-  animation: crawlRoll 23s linear forwards;
+  animation: crawlRoll 40s linear forwards;
 }
 
 @keyframes crawlRoll {

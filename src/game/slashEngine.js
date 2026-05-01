@@ -1,3 +1,7 @@
+import { playSlash, playCut, playBomb, playLoseLife, playGameOver } from './audioEngine.js'
+
+const EMOJI_FONT = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif"
+
 const TYPES = [
   { emoji: '🤖', pts: 10, bomb: false },
   { emoji: '👾', pts: 20, bomb: false },
@@ -30,6 +34,7 @@ export function createSlashEngine({ canvas, store }) {
   let lives = 3, score = 0, combo = 0, comboTimer = 0
   let spawnTimer = 0, statsTimer = 0
   let stars = [], rafId, running = false, lastT = 0
+  let lastSlashSound = 0
 
   function W() { return canvas.width }
   function H() { return canvas.height }
@@ -77,6 +82,7 @@ export function createSlashEngine({ canvas, store }) {
 
     if (obj.bomb) {
       lives = Math.max(0, lives - 1)
+      playBomb()
       pushStats(true)
       for (let i = 0; i < 18; i++) {
         particles.push({ x: obj.x, y: obj.y,
@@ -91,6 +97,7 @@ export function createSlashEngine({ canvas, store }) {
     score += obj.pts * Math.max(1, combo)
     combo++
     comboTimer = 2000
+    playCut(combo)
     pushStats(true)
 
     // slash angle for clipping
@@ -126,6 +133,7 @@ export function createSlashEngine({ canvas, store }) {
   function endGame() {
     running = false
     pushStats(true)
+    playGameOver()
     store().setResult('lose')
     store().setScreen('end')
     cancelAnimationFrame(rafId)
@@ -134,6 +142,7 @@ export function createSlashEngine({ canvas, store }) {
   // Called from SlashScreen on touch/mouse move
   function addTrailPoint(x, y, t) {
     trail.push({ x, y, t })
+    if (t - lastSlashSound > 70) { playSlash(); lastSlashSound = t }
     if (trail.length < 2) return
 
     const prev = trail[trail.length - 2]
@@ -172,7 +181,7 @@ export function createSlashEngine({ canvas, store }) {
       const margin = 90
       if (obj.x < -margin || obj.x > W() + margin ||
           obj.y < -margin || obj.y > H() + margin) {
-        if (!obj.bomb) { lives = Math.max(0, lives - 1); pushStats(true) }
+        if (!obj.bomb) { lives = Math.max(0, lives - 1); playLoseLife(); pushStats(true) }
         if (lives <= 0) endGame()
         return false
       }
@@ -246,7 +255,7 @@ export function createSlashEngine({ canvas, store }) {
         ctx.shadowColor = '#FF1744'
       }
       ctx.rotate(obj.rotation)
-      ctx.font = `${obj.sz}px serif`
+      ctx.font = `${obj.sz}px ${EMOJI_FONT}`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText(obj.emoji, 0, 0)
@@ -266,7 +275,7 @@ export function createSlashEngine({ canvas, store }) {
       else                   ctx.rect(0,   -sz, sz, sz * 2)
       ctx.clip()
       ctx.rotate(-f.slashAngle + f.rotation)
-      ctx.font = `${f.sz}px serif`
+      ctx.font = `${f.sz}px ${EMOJI_FONT}`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText(f.emoji, 0, 0)

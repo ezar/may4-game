@@ -74,7 +74,7 @@ export function drawPlayerGlow(ctx, { px, py, side }) {
 
 export function drawEnemy(ctx, enemy) {
   ctx.save()
-  ctx.font = `${enemy.sz}px serif`
+  ctx.font = `${enemy.sz}px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillText(enemy.emoji, enemy.x, enemy.y)

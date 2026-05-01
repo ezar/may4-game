@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { createSlashEngine } from '../game/slashEngine.js'
+import { startMusic, stopMusic } from '../game/audioEngine.js'
 import s from './SlashScreen.module.css'
 
 export default function SlashScreen() {
@@ -8,6 +9,7 @@ export default function SlashScreen() {
   const score  = useGameStore(st => st.score)
   const combo  = useGameStore(st => st.combo)
   const canvasRef = useRef(null)
+  const musicStarted = useRef(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -18,12 +20,17 @@ export default function SlashScreen() {
 
     let dragging = false
 
+    function ensureMusic() {
+      if (!musicStarted.current) { musicStarted.current = true; startMusic() }
+    }
+
     function getPos(clientX, clientY) {
       const rect = canvas.getBoundingClientRect()
       return { x: clientX - rect.left, y: clientY - rect.top }
     }
 
     function onTouchStart(e) {
+      ensureMusic()
       const now = performance.now()
       for (const t of e.changedTouches) {
         const p = getPos(t.clientX, t.clientY)
@@ -41,6 +48,7 @@ export default function SlashScreen() {
     }
 
     function onMouseDown(e) {
+      ensureMusic()
       dragging = true
       const p = getPos(e.clientX, e.clientY)
       engine.addTrailPoint(p.x, p.y, performance.now())
@@ -62,6 +70,7 @@ export default function SlashScreen() {
 
     return () => {
       engine.stop()
+      stopMusic()
       canvas.removeEventListener('touchstart',  onTouchStart)
       canvas.removeEventListener('touchmove',   onTouchMove)
       canvas.removeEventListener('mousedown',   onMouseDown)

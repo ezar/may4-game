@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { createEngine } from '../game/engine.js'
+import { startMusic, stopMusic } from '../game/audioEngine.js'
 import HUD from '../components/HUD.jsx'
 import Joystick from '../components/Joystick.jsx'
 import WaveBanner from '../components/WaveBanner.jsx'
@@ -23,8 +24,14 @@ export default function GameScreen() {
     })
     engine.start()
 
+    let musicStarted = false
+    function ensureMusic() {
+      if (!musicStarted) { musicStarted = true; startMusic() }
+    }
+
     // Touch → deflect via custom event
     const onTouch = (e) => {
+      ensureMusic()
       e.preventDefault()
       gameCanvas.dispatchEvent(new CustomEvent('deflect', {
         detail: { touches: Array.from(e.changedTouches) },
@@ -32,6 +39,7 @@ export default function GameScreen() {
     }
     // Click for desktop testing
     const onClick = (e) => {
+      ensureMusic()
       gameCanvas.dispatchEvent(new CustomEvent('deflect', {
         detail: { touches: [{ clientX: e.clientX, clientY: e.clientY }] },
       }))
@@ -42,6 +50,7 @@ export default function GameScreen() {
 
     return () => {
       engine.stop()
+      stopMusic()
       gameCanvas.removeEventListener('touchstart', onTouch)
       gameCanvas.removeEventListener('click', onClick)
     }

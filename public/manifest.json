@@ -1,0 +1,18 @@
+{
+  "name": "May The 4th — Star Wars Day",
+  "short_name": "May The 4th",
+  "description": "Star Wars Day arcade game — Survival mode and Modo Sable",
+  "start_url": "/may4-game/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#03030f",
+  "theme_color": "#03030f",
+  "icons": [
+    {
+      "src": "/may4-game/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
