@@ -1,43 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { tryActivateControls } from '../game/controls.js'
+import { useT } from '../i18n/index.js'
 import s from './IntroScreen.module.css'
-
-const CTRL_LABELS = {
-  0: { text: 'Sin activar', cls: '' },
-  1: { text: '✓ Giroscopio activo', cls: s.ok },
-  2: { text: '✓ Orientación activa', cls: s.ok },
-  3: { text: '🕹 Joystick virtual', cls: s.ok },
-}
-
-const HOW_TO = [
-  { icon: '📱', title: 'Inclina', desc: 'Mueve tu personaje inclinando el móvil en cualquier dirección.' },
-  { icon: '👆', title: 'Deflecta', desc: 'Toca cerca de un disparo para redirigirlo contra el enemigo.' },
-  { icon: '⚡', title: 'Force Blast', desc: 'Cada kill carga tu Fuerza. Al 100%, toca para devastar la pantalla.' },
-  { icon: '💥', title: 'Combo', desc: 'Kills rápidos consecutivos multiplican tu puntuación.' },
-]
-
-const HOW_TO_SLASH = [
-  { icon: '🖐️', title: 'Desliza', desc: 'Arrastra el dedo rápido sobre los objetos para cortarlos con tu sable.' },
-  { icon: '💣', title: 'Cuidado', desc: 'Las bombas te quitan una vida. ¡Nunca las cortes!' },
-  { icon: '✨', title: 'Combo', desc: 'Cortes rápidos consecutivos multiplican tu puntuación.' },
-  { icon: '❤️', title: 'Vidas', desc: 'Tienes 3 vidas. Cortar una bomba o dejar escapar un objeto las consume.' },
-]
-
-const ENEMIES = [
-  { emoji: '🤖', name: 'Droide',        detail: '1 HP · 10 pts',  note: '' },
-  { emoji: '👾', name: 'Stormtrooper',  detail: '2 HP · 20 pts',  note: '' },
-  { emoji: '🛸', name: 'TIE Fighter',   detail: '1 HP · 15 pts',  note: 'Zigzag' },
-  { emoji: '💀', name: 'Guardia Élite', detail: '3 HP · 40 pts',  note: 'Ola 3+' },
-]
-
-const SLASH_OBJECTS = [
-  { emoji: '🤖', name: 'Droide',        detail: '10 pts',   note: '' },
-  { emoji: '👾', name: 'Stormtrooper',  detail: '20 pts',   note: '' },
-  { emoji: '🛸', name: 'TIE Fighter',   detail: '15 pts',   note: '' },
-  { emoji: '💀', name: 'Guardia Élite', detail: '40 pts',   note: 'Escaso' },
-  { emoji: '💣', name: 'Bomba',         detail: '−1 vida',  note: '¡No cortar!' },
-]
 
 function useStarfield(canvasRef) {
   useEffect(() => {
@@ -87,6 +52,7 @@ function useStarfield(canvasRef) {
 }
 
 export default function IntroScreen() {
+  const t         = useT()
   const side      = useGameStore(st => st.side)
   const ctrlMode  = useGameStore(st => st.ctrlMode)
   const mode      = useGameStore(st => st.mode)
@@ -113,32 +79,34 @@ export default function IntroScreen() {
 
   function handleStart() {
     if (!side || !mode) return
-    if (mode === 'survival' && ctrlMode === 0) return
+    if ((mode === 'survival' || mode === 'infinite') && ctrlMode === 0) return
     setScreen('game')
   }
 
+  const ctrlLabel = t.intro.ctrlLabels[ctrlMode] ?? t.intro.ctrlLabels[0]
   const pill = detecting
-    ? { text: 'Detectando…', cls: '' }
-    : (CTRL_LABELS[ctrlMode] ?? CTRL_LABELS[0])
+    ? { text: t.general.detecting, cls: '' }
+    : { text: ctrlLabel.text, cls: ctrlLabel.cls ? s[ctrlLabel.cls] : '' }
 
-  const canStart = side !== null && mode !== null && (mode === 'slash' || ctrlMode > 0)
+  const needsGyro = mode === 'survival' || mode === 'infinite'
+  const canStart = side !== null && mode !== null && (!needsGyro || ctrlMode > 0)
+
+  const isSlashMode = mode === 'slash' || mode === 'maestro'
 
   return (
     <div className={s.screen}>
       <canvas ref={canvasRef} className={s.starfield} />
 
       <div className={s.content}>
-        {/* Logo */}
         <header className={s.logo}>
-          <div className={s.logoEyebrow}>— STAR WARS DAY —</div>
-          <div className={s.may}>MAY THE 4TH</div>
-          <div className={s.be}>BE WITH YOU</div>
+          <div className={s.logoEyebrow}>{t.general.starWarsDay}</div>
+          <div className={s.may}>{t.general.mayThe4th}</div>
+          <div className={s.be}>{t.general.beWithYou}</div>
           <div className={s.divider} />
         </header>
 
-        {/* Side selector */}
         <section className={s.sideSection}>
-          <div className={s.sideLabel}>ELIGE TU BANDO</div>
+          <div className={s.sideLabel}>{t.intro.chooseSide}</div>
           <div className={s.sides}>
             <button
               className={`${s.sideBtn} ${s.jedi} ${side === 'jedi' ? s.active : ''}`}
@@ -147,7 +115,7 @@ export default function IntroScreen() {
               <span className={s.sideGlow} />
               <span className={s.sideMoji}>⚔️</span>
               <span className={s.sideName}>JEDI</span>
-              <span className={s.sideTagline}>Luz y paz</span>
+              <span className={s.sideTagline}>{t.intro.jediTagline}</span>
             </button>
             <button
               className={`${s.sideBtn} ${s.sith} ${side === 'sith' ? s.active : ''}`}
@@ -156,56 +124,75 @@ export default function IntroScreen() {
               <span className={s.sideGlow} />
               <span className={s.sideMoji}>⚡</span>
               <span className={s.sideName}>SITH</span>
-              <span className={s.sideTagline}>Poder absoluto</span>
+              <span className={s.sideTagline}>{t.intro.sithTagline}</span>
             </button>
           </div>
         </section>
 
-        {/* Mode selector */}
         <section className={s.modeSection}>
-          <div className={s.sideLabel}>MODO DE JUEGO</div>
+          <div className={s.sideLabel}>{t.intro.gameMode}</div>
           <div className={s.modes}>
             <button
               className={`${s.modeBtn} ${mode === 'survival' ? s.modeActive : ''}`}
               onClick={() => setMode('survival')}
             >
               <span className={s.modeMoji}>🛡️</span>
-              <span className={s.modeName}>SUPERVIVENCIA</span>
-              <span className={s.modeDesc}>5 oleadas · Giroscopio</span>
+              <span className={s.modeName}>{t.intro.survival}</span>
+              <span className={s.modeDesc}>{t.intro.survivalDesc}</span>
             </button>
             <button
               className={`${s.modeBtn} ${mode === 'slash' ? s.modeActive : ''}`}
               onClick={() => setMode('slash')}
             >
               <span className={s.modeMoji}>⚔️</span>
-              <span className={s.modeName}>MODO SABLE</span>
-              <span className={s.modeDesc}>Corta todo · Sin límite</span>
+              <span className={s.modeName}>{t.intro.slash}</span>
+              <span className={s.modeDesc}>{t.intro.slashDesc}</span>
+            </button>
+            <button
+              className={`${s.modeBtn} ${mode === 'infinite' ? s.modeActive : ''}`}
+              onClick={() => setMode('infinite')}
+            >
+              <span className={s.modeMoji}>♾️</span>
+              <span className={s.modeName}>{t.intro.infinite}</span>
+              <span className={s.modeDesc}>{t.intro.infiniteDesc}</span>
+            </button>
+            <button
+              className={`${s.modeBtn} ${mode === 'maestro' ? s.modeActive : ''}`}
+              onClick={() => setMode('maestro')}
+            >
+              <span className={s.modeMoji}>⏱️</span>
+              <span className={s.modeName}>{t.intro.maestro}</span>
+              <span className={s.modeDesc}>{t.intro.maestroDesc}</span>
             </button>
           </div>
         </section>
 
-        {/* How to play */}
         <section className={s.howTo}>
           <div className={s.tabs}>
             <button
               className={`${s.tab} ${tab === 'play' ? s.tabActive : ''}`}
               onClick={() => setTab('play')}
-            >Cómo jugar</button>
+            >{t.intro.tabPlay}</button>
             <button
               className={`${s.tab} ${tab === 'enemies' ? s.tabActive : ''}`}
               onClick={() => setTab('enemies')}
-            >{mode === 'slash' ? 'Objetos' : 'Enemigos'}</button>
-            {mode !== 'slash' && (
+            >{isSlashMode ? t.intro.tabObjects : t.intro.tabEnemies}</button>
+            {!isSlashMode && (
               <button
                 className={`${s.tab} ${tab === 'waves' ? s.tabActive : ''}`}
                 onClick={() => setTab('waves')}
-              >Oleadas</button>
+              >{t.intro.tabWaves}</button>
             )}
           </div>
 
           {tab === 'play' && (
             <div className={s.cards}>
-              {(mode === 'slash' ? HOW_TO_SLASH : HOW_TO).map((item, i) => (
+              {(mode === 'maestro'
+                ? t.intro.howToMaestro
+                : isSlashMode
+                  ? t.intro.howToSlash
+                  : t.intro.howTo
+              ).map((item, i) => (
                 <div key={item.title} className={s.card} style={{ animationDelay: `${i * 0.07}s` }}>
                   <span className={s.cardIcon}>{item.icon}</span>
                   <div>
@@ -219,7 +206,7 @@ export default function IntroScreen() {
 
           {tab === 'enemies' && (
             <div className={s.enemyGrid}>
-              {(mode === 'slash' ? SLASH_OBJECTS : ENEMIES).map((e, i) => (
+              {(isSlashMode ? t.intro.slashObjects : t.intro.enemies).map((e, i) => (
                 <div key={e.name} className={s.enemyCard} style={{ animationDelay: `${i * 0.06}s` }}>
                   <span className={s.enemyEmoji}>{e.emoji}</span>
                   <div className={s.enemyName}>{e.name}</div>
@@ -230,15 +217,9 @@ export default function IntroScreen() {
             </div>
           )}
 
-          {tab === 'waves' && mode !== 'slash' && (
+          {tab === 'waves' && !isSlashMode && (
             <div className={s.waveList}>
-              {[
-                ['OLA 1', 'La Fuerza Despierta',  '6 kills',  'Droides y Stormtroopers'],
-                ['OLA 2', 'Tropas Imperiales',     '10 kills', 'Mayor velocidad'],
-                ['OLA 3', 'Guardias Oscuros',      '14 kills', 'TIE Fighters y Élites aparecen'],
-                ['OLA 4', 'El Imperio Avanza',     '18 kills', 'Disparos más rápidos'],
-                ['OLA 5', 'Batalla Final',         '22 kills', 'Dificultad máxima'],
-              ].map(([wave, name, kills, note], i) => (
+              {t.intro.waveRows.map(([wave, name, kills, note], i) => (
                 <div key={wave} className={s.waveRow} style={{ animationDelay: `${i * 0.07}s` }}>
                   <div className={s.waveNum}>{wave}</div>
                   <div className={s.waveInfo}>
@@ -247,17 +228,16 @@ export default function IntroScreen() {
                   </div>
                 </div>
               ))}
-              <div className={s.waveTip}>+20 HP al completar cada ola</div>
+              <div className={s.waveTip}>{t.intro.waveTip}</div>
             </div>
           )}
         </section>
 
-        {/* Controls + Start */}
         <footer className={s.footer}>
-          {mode !== 'slash' && (
+          {needsGyro && (
             <div className={s.ctrlRow}>
               <button className={s.gyroBtn} onClick={handleActivate} disabled={detecting}>
-                {detecting ? 'Detectando…' : '📡 Activar Giroscopio'}
+                {detecting ? t.general.detecting : t.intro.activateGyro}
               </button>
               <div className={`${s.pill} ${pill.cls}`}>{pill.text}</div>
             </div>
@@ -265,15 +245,13 @@ export default function IntroScreen() {
 
           <button className={s.startBtn} onClick={handleStart} disabled={!canStart}>
             {canStart
-              ? (mode === 'slash'
-                  ? `MODO SABLE · ${side === 'jedi' ? 'JEDI' : 'SITH'}`
-                  : `SUPERVIVENCIA · ${side === 'jedi' ? 'JEDI' : 'SITH'}`)
-              : 'COMENZAR'}
+              ? t.intro.startLabel(mode, side)
+              : t.intro.startDefault}
           </button>
 
-          {!side && <p className={s.hint}>Elige tu bando para continuar</p>}
-          {side && !mode && <p className={s.hint}>Elige un modo de juego para continuar</p>}
-          {side && mode === 'survival' && ctrlMode === 0 && <p className={s.hint}>Activa el giroscopio para continuar</p>}
+          {!side && <p className={s.hint}>{t.intro.hintSide}</p>}
+          {side && !mode && <p className={s.hint}>{t.intro.hintMode}</p>}
+          {side && needsGyro && ctrlMode === 0 && <p className={s.hint}>{t.intro.hintGyro}</p>}
         </footer>
       </div>
     </div>

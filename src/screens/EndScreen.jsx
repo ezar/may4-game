@@ -1,20 +1,13 @@
 import useGameStore from '../store/gameStore.js'
-import { QUOTES } from '../game/waves.js'
+import { useT } from '../i18n/index.js'
 import s from './EndScreen.module.css'
-
-const SLASH_QUOTES = [
-  '"El sable de luz es la vida del Jedi." — Obi-Wan Kenobi',
-  '"Corta primero, pregunta después." — Sabiduría Sith',
-  '"El movimiento más rápido es el que no se ve venir." — Yoda',
-  '"Un guerrero sin espada no es guerrero." — Proverbio Mandaloriano',
-  '"La Fuerza guía mi hoja." — Anakin Skywalker',
-]
 
 function randomFrom(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
 export default function EndScreen() {
+  const t         = useT()
   const result    = useGameStore(st => st.result)
   const side      = useGameStore(st => st.side)
   const score     = useGameStore(st => st.score)
@@ -23,14 +16,16 @@ export default function EndScreen() {
   const mode      = useGameStore(st => st.mode)
   const resetGame = useGameStore(st => st.resetGame)
 
-  const isWin    = result === 'win'
-  const isSlash  = mode === 'slash'
+  const isWin     = result === 'win'
+  const isSlash   = mode === 'slash'
+  const isMaestro = mode === 'maestro'
+  const isInfinite = mode === 'infinite'
 
   let quote
-  if (isSlash)               quote = randomFrom(SLASH_QUOTES)
-  else if (isWin && side === 'jedi')  quote = randomFrom(QUOTES.winJedi)
-  else if (isWin && side === 'sith')  quote = randomFrom(QUOTES.winSith)
-  else                                quote = randomFrom(QUOTES.lose)
+  if (isSlash || isMaestro)              quote = randomFrom(t.slashQuotes)
+  else if (isWin && side === 'jedi')     quote = randomFrom(t.quotes.winJedi)
+  else if (isWin && side === 'sith')     quote = randomFrom(t.quotes.winSith)
+  else                                   quote = randomFrom(t.quotes.lose)
 
   function handleRetry() {
     const color = side === 'jedi' ? '#00BFFF' : '#FF1744'
@@ -38,28 +33,46 @@ export default function EndScreen() {
     resetGame()
   }
 
+  function getModeLabel() {
+    if (isSlash)    return t.end.slashMode
+    if (isMaestro)  return t.end.maestroMode
+    if (isInfinite) return t.end.infiniteMode
+    return null
+  }
+
+  const showVictory = isWin && !isSlash && !isMaestro && !isInfinite
+  const titleText = showVictory ? t.end.victory : t.end.gameOver
+
+  function getSubLabel() {
+    if (isSlash || isMaestro) {
+      const modeLabel = isSlash ? t.end.slashMode : t.end.maestroMode
+      return `${modeLabel} · ${combo > 0 ? `Combo ×${combo}` : t.end.noCombo}`
+    }
+    if (isInfinite) {
+      return `${t.end.infiniteMode} · ${t.hud.wave(wave)}`
+    }
+    return t.end.waveOf(wave)
+  }
+
   return (
     <div className={s.screen}>
       <div className={s.inner}>
-        <div className={`${s.title} ${isWin && !isSlash ? s.win : s.lose}`}>
-          {isWin && !isSlash ? '¡VICTORIA!' : 'GAME OVER'}
+        <div className={`${s.title} ${showVictory ? s.win : s.lose}`}>
+          {titleText}
         </div>
 
-        {isWin && !isSlash && <div className={s.stars}>✦ ✦ ✦</div>}
+        {showVictory && <div className={s.stars}>{t.end.stars}</div>}
 
         <div className={s.scoreBox}>
-          <div className={s.scoreLabel}>PUNTUACIÓN FINAL</div>
+          <div className={s.scoreLabel}>{t.end.finalScore}</div>
           <div className={s.scoreVal}>{score.toLocaleString()}</div>
-          {isSlash
-            ? <div className={s.waveReached}>MODO SABLE · {combo > 0 ? `Combo ×${combo}` : 'Sin combo'}</div>
-            : <div className={s.waveReached}>OLA {wave} de 5</div>
-          }
+          <div className={s.waveReached}>{getSubLabel()}</div>
         </div>
 
         <div className={s.quote}>{quote}</div>
 
         <button className={s.retryBtn} onClick={handleRetry}>
-          VOLVER A INTENTAR
+          {t.end.retry}
         </button>
       </div>
     </div>

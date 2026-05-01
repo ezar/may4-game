@@ -1,7 +1,9 @@
 import useGameStore from '../store/gameStore.js'
+import { useT } from '../i18n/index.js'
 import s from './HUD.module.css'
 
 export default function HUD() {
+  const t      = useT()
   const health = useGameStore(st => st.health)
   const score  = useGameStore(st => st.score)
   const force  = useGameStore(st => st.force)
@@ -14,7 +16,7 @@ export default function HUD() {
     <div className={s.hud}>
       <div className={s.row}>
         <div className={s.barGroup}>
-          <span className={s.label}>VIDA</span>
+          <span className={s.label}>{t.hud.health}</span>
           <div className={s.barTrack}>
             <div
               className={s.barFill}
@@ -24,7 +26,7 @@ export default function HUD() {
           <span className={s.val}>{health}</span>
         </div>
 
-        <div className={s.waveLabel}>OLA {wave}</div>
+        <div className={s.waveLabel}>{t.hud.wave(wave)}</div>
 
         <div className={s.barGroup}>
           <span className={s.val}>{score}</span>
@@ -34,7 +36,7 @@ export default function HUD() {
               style={{ width: `${Math.min(100, force)}%`, background: 'var(--side-color)' }}
             />
           </div>
-          <span className={s.label}>FUERZA</span>
+          <span className={s.label}>{t.hud.force}</span>
         </div>
       </div>
 
@@ -42,7 +44,7 @@ export default function HUD() {
         <div className={s.combo}>×{combo} COMBO</div>
       )}
 
-      <div className={s.hint}>TAP → DEFLECTAR · FORCE BLAST</div>
+      <div className={s.hint}>{t.hud.hint}</div>
     </div>
   )
 }

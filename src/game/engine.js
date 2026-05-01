@@ -171,8 +171,9 @@ export function createEngine({ bgCanvas, gameCanvas, store }) {
         wave++
         waveKills = 0
         spawnTimer = 0
-        if (wave > WAVES.length) {
-          wave = WAVES.length  // keep at 5 for EndScreen display
+        const isInfinite = store().mode === 'infinite'
+        if (!isInfinite && wave > WAVES.length) {
+          wave = WAVES.length
           endGame('win')
           return
         }
@@ -183,7 +184,7 @@ export function createEngine({ bgCanvas, gameCanvas, store }) {
       return
     }
 
-    const wc = WAVES[wave - 1]
+    const wc = WAVES[Math.min(wave, WAVES.length) - 1]
 
     // Spawn enemies
     spawnTimer -= dt

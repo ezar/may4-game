@@ -6,7 +6,7 @@ function ac() {
   if (!ctx) {
     ctx = new (window.AudioContext || window.webkitAudioContext)()
     masterGain = ctx.createGain()
-    masterGain.gain.value = 0.42
+    masterGain.gain.value = 0.32
     masterGain.connect(ctx.destination)
   }
   if (ctx.state === 'suspended') ctx.resume()
@@ -64,7 +64,6 @@ export function playCut(combo = 1) {
   chain(o, f, g, masterGain)
   o.start(t)
   o.stop(t + 0.18)
-
   if (combo >= 3) {
     ;[523.25, 659.25, 783.99].forEach((hz, i) => {
       const st = t + i * 0.055
@@ -123,132 +122,165 @@ export function playLoseLife() {
 export function playGameOver() {
   const a = ac()
   const t = a.currentTime
-  ;[185.00, 164.81, 155.56, 130.81].forEach((hz, i) => {
-    const st = t + i * 0.3
+  // Imperial March descending phrase (game-over fanfare)
+  ;[196.00, 155.56, 233.08, 196.00].forEach((hz, i) => {
+    const st = t + i * 0.28
     const o = a.createOscillator()
     o.type = 'sawtooth'
     o.frequency.value = hz
     const f = a.createBiquadFilter()
     f.type = 'lowpass'
-    f.frequency.value = 900
+    f.frequency.setValueAtTime(300, st)
+    f.frequency.exponentialRampToValueAtTime(1000, st + 0.06)
     const g = a.createGain()
-    g.gain.setValueAtTime(0.5, st)
-    g.gain.exponentialRampToValueAtTime(0.001, st + 0.45)
+    g.gain.setValueAtTime(0, st)
+    g.gain.linearRampToValueAtTime(0.5, st + 0.06)
+    g.gain.exponentialRampToValueAtTime(0.001, st + 0.55)
     chain(o, f, g, masterGain)
     o.start(st)
-    o.stop(st + 0.45)
+    o.stop(st + 0.6)
   })
 }
 
-// ── Background Music ─────────────────────────────────────────────────────────
+// ── Imperial March — synthesized (John Williams, arranged for Web Audio) ──────
+// Using actual melody notes for recognizable Star Wars feel.
+// Synthesized performance ≠ the original recording.
 
-const BPM = 108
-const SPB = 60 / BPM  // seconds per beat
+const BPM  = 103
+const Q    = 60 / BPM   // quarter-note duration in seconds ≈ 0.583 s
 
-// Am → Am → Dm → Em (original composition)
-const CHORDS = [
-  [110.00, 130.81, 164.81],  // Am: A2 C3 E3
-  [110.00, 130.81, 164.81],  // Am
-  [146.83, 174.61, 220.00],  // Dm: D3 F3 A3
-  [164.81, 196.00, 246.94],  // Em: E3 G3 B3
+// Melody: G minor, Eb major cross — main motif ×2 (17 beats ≈ 9.9 s loop)
+const MARCH_MELODY = [
+  // ── Phrase 1 ──────────────────────
+  [196.00, Q,      Q * 0  ],  // G3
+  [196.00, Q,      Q * 1  ],  // G3
+  [196.00, Q,      Q * 2  ],  // G3
+  [155.56, Q * 1.5, Q * 3 ],  // Eb3  (dotted ♩)
+  [233.08, Q * 0.5, Q * 4.5], // Bb3  (♪)
+  [196.00, Q * 2,  Q * 5  ],  // G3   (half)
+  // ── Phrase 2 ──────────────────────
+  [293.66, Q,      Q * 7  ],  // D4
+  [293.66, Q,      Q * 8  ],  // D4
+  [293.66, Q,      Q * 9  ],  // D4
+  [311.13, Q * 1.5, Q * 10],  // Eb4  (dotted ♩)
+  [233.08, Q * 0.5, Q * 11.5],// Bb3  (♪)
+  [185.00, Q,      Q * 12 ],  // Gb3 (F#3)
+  [155.56, Q * 1.5, Q * 13],  // Eb3  (dotted ♩)
+  [233.08, Q * 0.5, Q * 14.5],// Bb3  (♪)
+  [196.00, Q * 2,  Q * 15 ],  // G3   (half)
 ]
 
-// Original melody — A minor, 16 beats
-const MELODY = [
-  [440.00, 0.5,  0  ],  // A4
-  [523.25, 0.5,  0.5],  // C5
-  [659.25, 1.5,  1  ],  // E5
-  [587.33, 0.5,  2.5],  // D5
-  [523.25, 1.0,  3  ],  // C5
-  [440.00, 1.5,  4  ],  // A4
-  [392.00, 0.5,  5.5],  // G4
-  [440.00, 1.0,  6  ],  // A4
-  [523.25, 1.0,  7  ],  // C5
-  [587.33, 0.5,  8  ],  // D5
-  [659.25, 0.5,  8.5],  // E5
-  [587.33, 1.0,  9  ],  // D5
-  [523.25, 0.5,  10 ],  // C5
-  [440.00, 0.5,  10.5], // A4
-  [392.00, 2.0,  11 ],  // G4
-  [440.00, 0.5,  13 ],  // A4
-  [523.25, 0.5,  13.5], // C5
-  [659.25, 0.5,  14 ],  // E5
-  [698.46, 0.5,  14.5], // F5
-  [659.25, 1.0,  15 ],  // E5
+// Bass: one octave below, same rhythm
+const MARCH_BASS = [
+  [ 98.00, Q,      Q * 0  ],  // G2
+  [ 98.00, Q,      Q * 1  ],
+  [ 98.00, Q,      Q * 2  ],
+  [ 77.78, Q * 1.5, Q * 3 ],  // Eb2
+  [116.54, Q * 0.5, Q * 4.5], // Bb2
+  [ 98.00, Q * 2,  Q * 5  ],  // G2
+  [146.83, Q,      Q * 7  ],  // D3
+  [146.83, Q,      Q * 8  ],
+  [146.83, Q,      Q * 9  ],
+  [155.56, Q * 1.5, Q * 10],  // Eb3
+  [116.54, Q * 0.5, Q * 11.5],// Bb2
+  [ 92.50, Q,      Q * 12 ],  // Gb2
+  [ 77.78, Q * 1.5, Q * 13],  // Eb2
+  [116.54, Q * 0.5, Q * 14.5],// Bb2
+  [ 98.00, Q * 2,  Q * 15 ],  // G2
 ]
 
-const LOOP_DUR = 16 * SPB
+// Timpani accent beats
+const MARCH_DRUMS = [
+  {hz: 98.00,  beat: 0   },
+  {hz: 77.78,  beat: 3   },
+  {hz: 116.54, beat: 4.5 },
+  {hz: 98.00,  beat: 5   },
+  {hz: 146.83, beat: 7   },
+  {hz: 155.56, beat: 10  },
+  {hz: 116.54, beat: 11.5},
+  {hz: 92.50,  beat: 12  },
+  {hz: 77.78,  beat: 13  },
+  {hz: 98.00,  beat: 15  },
+]
+
+const LOOP_DUR = Q * 17  // ≈ 9.9 s
+
+// Brass voice: dual detuned sawtooth → lowpass filter with opening attack
+function brass(hz, dur, t, dest, vol = 0.22) {
+  const a = ac()
+  const o1 = a.createOscillator()
+  const o2 = a.createOscillator()
+  o1.type = o2.type = 'sawtooth'
+  o1.frequency.value = hz
+  o2.frequency.value = hz * 1.007   // slight chorus
+
+  const filt = a.createBiquadFilter()
+  filt.type = 'lowpass'
+  filt.Q.value = 1.8
+  filt.frequency.setValueAtTime(180, t)
+  filt.frequency.exponentialRampToValueAtTime(2000, t + 0.07)
+  filt.frequency.linearRampToValueAtTime(1100, t + 0.22)
+
+  const g = a.createGain()
+  g.gain.setValueAtTime(0, t)
+  g.gain.linearRampToValueAtTime(vol, t + 0.06)
+  g.gain.setValueAtTime(vol * 0.78, t + Math.max(0.08, dur - 0.07))
+  g.gain.linearRampToValueAtTime(0, t + dur)
+
+  const mix = a.createGain()
+  mix.gain.value = 0.5
+  o1.connect(mix)
+  o2.connect(mix)
+  chain(mix, filt, g, dest)
+  o1.start(t); o1.stop(t + dur + 0.04)
+  o2.start(t); o2.stop(t + dur + 0.04)
+}
+
+// Bass voice: sawtooth, tight lowpass
+function bass(hz, dur, t, dest) {
+  const a = ac()
+  const o = a.createOscillator()
+  o.type = 'sawtooth'
+  o.frequency.value = hz
+  const filt = a.createBiquadFilter()
+  filt.type = 'lowpass'
+  filt.frequency.value = 380
+  const g = a.createGain()
+  g.gain.setValueAtTime(0, t)
+  g.gain.linearRampToValueAtTime(0.32, t + 0.04)
+  g.gain.setValueAtTime(0.22, t + Math.max(0.05, dur - 0.05))
+  g.gain.linearRampToValueAtTime(0, t + dur)
+  chain(o, filt, g, dest)
+  o.start(t); o.stop(t + dur + 0.04)
+}
+
+// Timpani: pitch-bent sine + short noise transient
+function timpani(hz, t, dest) {
+  const a = ac()
+  const o = a.createOscillator()
+  o.type = 'sine'
+  o.frequency.setValueAtTime(hz * 1.7, t)
+  o.frequency.exponentialRampToValueAtTime(hz, t + 0.09)
+  const g = a.createGain()
+  g.gain.setValueAtTime(0.55, t)
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.75)
+  chain(o, g, dest)
+  o.start(t); o.stop(t + 0.75)
+
+  const ns = createNoise(0.03)
+  const nf = a.createBiquadFilter()
+  nf.type = 'bandpass'; nf.frequency.value = 350; nf.Q.value = 2.5
+  const ng = a.createGain()
+  ng.gain.setValueAtTime(0.28, t)
+  ng.gain.exponentialRampToValueAtTime(0.001, t + 0.03)
+  chain(ns, nf, ng, dest)
+  ns.start(t); ns.stop(t + 0.03)
+}
 
 function scheduleLoop(t0, dest) {
-  const a = ac()
-
-  for (let bar = 0; bar < 4; bar++) {
-    // Kick on beat 1 of each bar
-    const kt = t0 + bar * 4 * SPB
-    const ko = a.createOscillator()
-    ko.frequency.setValueAtTime(140, kt)
-    ko.frequency.exponentialRampToValueAtTime(32, kt + 0.22)
-    const kg = a.createGain()
-    kg.gain.setValueAtTime(0.55, kt)
-    kg.gain.exponentialRampToValueAtTime(0.001, kt + 0.28)
-    chain(ko, kg, dest)
-    ko.start(kt)
-    ko.stop(kt + 0.28)
-
-    // Snare on beat 3 of each bar
-    const snt = t0 + (bar * 4 + 2) * SPB
-    const sns = createNoise(0.14)
-    const snf = a.createBiquadFilter()
-    snf.type = 'highpass'
-    snf.frequency.value = 2000
-    const sng = a.createGain()
-    sng.gain.setValueAtTime(0.11, snt)
-    sng.gain.exponentialRampToValueAtTime(0.001, snt + 0.11)
-    chain(sns, snf, sng, dest)
-    sns.start(snt)
-    sns.stop(snt + 0.14)
-  }
-
-  CHORDS.forEach((freqs, ci) => {
-    const t = t0 + ci * 4 * SPB
-    const dur = 4 * SPB
-    freqs.forEach(hz => {
-      const o = a.createOscillator()
-      o.type = 'sawtooth'
-      o.frequency.value = hz
-      const f = a.createBiquadFilter()
-      f.type = 'lowpass'
-      f.frequency.value = 520
-      f.Q.value = 0.9
-      const g = a.createGain()
-      g.gain.setValueAtTime(0, t)
-      g.gain.linearRampToValueAtTime(0.038, t + 0.2)
-      g.gain.setValueAtTime(0.038, t + dur - 0.12)
-      g.gain.linearRampToValueAtTime(0, t + dur)
-      chain(o, f, g, dest)
-      o.start(t)
-      o.stop(t + dur)
-    })
-  })
-
-  MELODY.forEach(([hz, durB, delB]) => {
-    const t = t0 + delB * SPB
-    const dur = durB * SPB
-    const o = a.createOscillator()
-    o.type = 'square'
-    o.frequency.value = hz
-    const f = a.createBiquadFilter()
-    f.type = 'lowpass'
-    f.frequency.value = 1500
-    const g = a.createGain()
-    g.gain.setValueAtTime(0, t)
-    g.gain.linearRampToValueAtTime(0.065, t + 0.02)
-    g.gain.setValueAtTime(0.06, t + Math.max(0.02, dur - 0.04))
-    g.gain.linearRampToValueAtTime(0, t + dur)
-    chain(o, f, g, dest)
-    o.start(t)
-    o.stop(t + dur)
-  })
+  MARCH_MELODY.forEach(([hz, dur, at]) => brass(hz, dur, t0 + at, dest))
+  MARCH_BASS.forEach(([hz, dur, at])   => bass(hz, dur, t0 + at, dest))
+  MARCH_DRUMS.forEach(({hz, beat})     => timpani(hz, t0 + beat * Q, dest))
 }
 
 export function startMusic() {
@@ -256,7 +288,7 @@ export function startMusic() {
   stopMusic()
   musicGain = a.createGain()
   musicGain.gain.setValueAtTime(0, a.currentTime)
-  musicGain.gain.linearRampToValueAtTime(1, a.currentTime + 2.5)
+  musicGain.gain.linearRampToValueAtTime(1, a.currentTime + 1.5)
   musicGain.connect(masterGain)
 
   let next = a.currentTime + 0.06

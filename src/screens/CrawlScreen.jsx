@@ -1,37 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useT } from '../i18n/index.js'
 import s from './CrawlScreen.module.css'
-
-const CRAWL = [
-  {
-    type: 'title',
-    ep:   'EPISODIO I',
-    name: 'UNA NUEVA AMENAZA',
-  },
-  {
-    type: 'p',
-    text: 'El Imperio Galáctico extiende su dominio de oscuridad por todos los rincones de la galaxia. Sus legiones de droides, stormtroopers y cazas TIE avanzan sin descanso, aplastando toda resistencia en su camino.',
-  },
-  {
-    type: 'p',
-    text: 'Los últimos defensores de la República caen uno a uno. La esperanza parpadea como una vela en el vacío del espacio.',
-  },
-  {
-    type: 'p',
-    text: 'En el caos de la batalla, un guerrero solitario emerge de las sombras. Armado únicamente con su sable de luz y guiado por la Fuerza que corre por sus venas, acepta el desafío más difícil de su vida.',
-  },
-  {
-    type: 'highlight',
-    text: 'CINCO OLEADAS de tropas imperiales se lanzan en su contra.',
-  },
-  {
-    type: 'p',
-    text: 'Jedi o Sith, el destino de la galaxia depende de un solo guerrero. El tiempo se agota.',
-  },
-  {
-    type: 'p',
-    text: '¿Tienes suficiente Fuerza para sobrevivir?',
-  },
-]
 
 function useStarfield(canvasRef) {
   useEffect(() => {
@@ -81,7 +50,8 @@ function useStarfield(canvasRef) {
 }
 
 export default function CrawlScreen({ onDone }) {
-  const [phase, setPhase] = useState(0) // 0: "Hace mucho tiempo" | 1: crawl
+  const t = useT()
+  const [phase, setPhase] = useState(0)
   const canvasRef  = useRef(null)
   const doneRef    = useRef(false)
   useStarfield(canvasRef)
@@ -100,26 +70,24 @@ export default function CrawlScreen({ onDone }) {
 
   return (
     <div className={s.screen} onClick={skip}>
-      {/* Stars — always rendering, opacity controlled by phase */}
       <canvas
         ref={canvasRef}
         className={`${s.stars} ${phase === 1 ? s.starsVisible : ''}`}
       />
 
-      {/* Phase 0: "Hace mucho tiempo..." */}
       <div className={`${s.longAgo} ${phase === 0 ? s.longAgoVisible : ''}`}>
-        Hace mucho tiempo, en una galaxia<br />muy, muy lejana...
+        {t.crawl.longAgo.split('\n').map((line, i) => (
+          <span key={i}>{line}{i < t.crawl.longAgo.split('\n').length - 1 && <br />}</span>
+        ))}
       </div>
 
-      {/* Phase 1: crawl */}
       {phase === 1 && (
         <>
-          {/* Gradient fade at top — text disappears into space */}
           <div className={s.topFade} />
 
           <div className={s.crawlOuter}>
             <div className={s.crawlInner}>
-              {CRAWL.map((block, i) => {
+              {t.crawl.blocks.map((block, i) => {
                 if (block.type === 'title') return (
                   <div key={i} className={s.crawlTitle}>
                     <div className={s.crawlEp}>{block.ep}</div>
@@ -138,7 +106,7 @@ export default function CrawlScreen({ onDone }) {
       )}
 
       <button className={s.skip} onClick={(e) => { e.stopPropagation(); skip() }}>
-        Saltar ›
+        {t.crawl.skip}
       </button>
     </div>
   )

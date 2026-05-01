@@ -35,6 +35,7 @@ export function createSlashEngine({ canvas, store }) {
   let spawnTimer = 0, statsTimer = 0
   let stars = [], rafId, running = false, lastT = 0
   let lastSlashSound = 0
+  let timeLeft = 0, isMaestro = false
 
   function W() { return canvas.width }
   function H() { return canvas.height }
@@ -49,7 +50,8 @@ export function createSlashEngine({ canvas, store }) {
 
   function pushStats(force = false) {
     if (force || statsTimer <= 0) {
-      store().updateStats({ score, health: lives * 34, force: 0, wave: Math.ceil(difficulty() + 1), combo })
+      const healthVal = isMaestro ? Math.round((timeLeft / 60000) * 100) : lives * 34
+      store().updateStats({ score, health: healthVal, force: isMaestro ? timeLeft / 600 : 0, wave: Math.ceil(difficulty() + 1), combo })
       statsTimer = 100
     }
   }
@@ -81,16 +83,28 @@ export function createSlashEngine({ canvas, store }) {
     const color = sideColor()
 
     if (obj.bomb) {
-      lives = Math.max(0, lives - 1)
       playBomb()
-      pushStats(true)
-      for (let i = 0; i < 18; i++) {
-        particles.push({ x: obj.x, y: obj.y,
-          vx: randSpread(7), vy: randSpread(7) - 1,
-          color: '#FF1744', life: 1, sz: 2 + Math.random() * 4 })
+      if (isMaestro) {
+        timeLeft = Math.max(0, timeLeft - 5000)
+        pushStats(true)
+        for (let i = 0; i < 18; i++) {
+          particles.push({ x: obj.x, y: obj.y,
+            vx: randSpread(7), vy: randSpread(7) - 1,
+            color: '#FF1744', life: 1, sz: 2 + Math.random() * 4 })
+        }
+        rings.push({ x: obj.x, y: obj.y, r: 10, maxR: 90, life: 1, color: '#FF1744' })
+        if (timeLeft <= 0) endGame()
+      } else {
+        lives = Math.max(0, lives - 1)
+        pushStats(true)
+        for (let i = 0; i < 18; i++) {
+          particles.push({ x: obj.x, y: obj.y,
+            vx: randSpread(7), vy: randSpread(7) - 1,
+            color: '#FF1744', life: 1, sz: 2 + Math.random() * 4 })
+        }
+        rings.push({ x: obj.x, y: obj.y, r: 10, maxR: 90, life: 1, color: '#FF1744' })
+        if (lives <= 0) endGame()
       }
-      rings.push({ x: obj.x, y: obj.y, r: 10, maxR: 90, life: 1, color: '#FF1744' })
-      if (lives <= 0) endGame()
       return
     }
 
@@ -166,6 +180,15 @@ export function createSlashEngine({ canvas, store }) {
       if (comboTimer <= 0) combo = 0
     }
 
+    if (isMaestro) {
+      timeLeft -= dt
+      if (timeLeft <= 0) {
+        timeLeft = 0
+        endGame()
+        return
+      }
+    }
+
     spawnTimer -= dt
     if (spawnTimer <= 0 && objects.length < 10) {
       objects.push(spawnObject())
@@ -181,8 +204,8 @@ export function createSlashEngine({ canvas, store }) {
       const margin = 90
       if (obj.x < -margin || obj.x > W() + margin ||
           obj.y < -margin || obj.y > H() + margin) {
-        if (!obj.bomb) { lives = Math.max(0, lives - 1); playLoseLife(); pushStats(true) }
-        if (lives <= 0) endGame()
+        if (!obj.bomb && !isMaestro) { lives = Math.max(0, lives - 1); playLoseLife(); pushStats(true) }
+        if (!isMaestro && lives <= 0) endGame()
         return false
       }
       return obj.alive
@@ -365,7 +388,9 @@ export function createSlashEngine({ canvas, store }) {
       canvas.height = window.innerHeight
       stars = initStars(W(), H())
       objects = []; fragments = []; particles = []; rings = []; trail = []
+      isMaestro = store().mode === 'maestro'
       lives = 3; score = 0; combo = 0; comboTimer = 0
+      timeLeft = isMaestro ? 60000 : 0
       spawnTimer = 800; statsTimer = 0
       running = true
       window.addEventListener('resize', resize)
