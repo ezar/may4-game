@@ -2,22 +2,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100dvh;
-  padding: 24px 20px;
-  gap: 20px;
+  padding: 20px 20px 24px;
+  gap: 16px;
   background: radial-gradient(ellipse at center, #0a0a2a 0%, #03030f 70%);
+  overflow-y: auto;
 }
 
 /* Logo */
 .logo {
   text-align: center;
+  flex-shrink: 0;
 }
 
 .may {
   font-family: var(--font-display);
-  font-size: clamp(26px, 8vw, 44px);
+  font-size: clamp(22px, 7vw, 40px);
   color: var(--gold);
   letter-spacing: 0.08em;
   text-shadow: 0 0 30px var(--gold), 0 0 60px rgba(255,215,0,0.3);
@@ -26,65 +27,160 @@
 
 .be {
   font-family: var(--font-display);
-  font-size: clamp(13px, 4vw, 20px);
-  color: rgba(255, 215, 0, 0.6);
+  font-size: clamp(11px, 3.5vw, 18px);
+  color: rgba(255, 215, 0, 0.55);
   letter-spacing: 0.15em;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .divider {
-  width: 60px;
+  width: 50px;
   height: 2px;
   background: linear-gradient(to right, transparent, var(--gold), transparent);
-  margin: 12px auto 0;
+  margin: 10px auto 0;
 }
 
-/* Instruction chips */
-.chips {
+/* How to play */
+.howTo {
+  width: 100%;
+  max-width: 360px;
+  flex-shrink: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 10px;
+}
+
+.tab {
+  flex: 1;
+  padding: 7px;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.tab.tabActive {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+/* How to play cards */
+.cards {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  max-width: 340px;
+  gap: 7px;
 }
 
-.chip {
+.card {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 10px;
-  padding: 8px 12px;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 300;
-  color: rgba(255,255,255,0.8);
+  padding: 10px 12px;
 }
 
-.chipIcon {
-  font-size: 18px;
+.cardIcon {
+  font-size: 22px;
   flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--side-color);
+  letter-spacing: 0.05em;
+}
+
+.cardDesc {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.4;
+}
+
+/* Enemies grid */
+.enemyGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.enemyCard {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.enemyEmoji {
+  font-size: 28px;
+}
+
+.enemyName {
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.enemyStats {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+}
+
+.enemyNote {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--gold);
+  font-style: italic;
 }
 
 /* Side selector */
 .sideSection {
   width: 100%;
-  max-width: 340px;
+  max-width: 360px;
+  flex-shrink: 0;
 }
 
 .sideLabel {
   font-family: var(--font-display);
   font-size: 10px;
-  color: #666;
+  color: #555;
   letter-spacing: 0.2em;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .sides {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .sideBtn {
@@ -92,18 +188,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 14px 10px;
+  gap: 5px;
+  padding: 12px 10px;
   border-radius: 12px;
   background: rgba(255,255,255,0.04);
-  border: 2px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
-  font-size: 14px;
+  border: 2px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .sideMoji {
-  font-size: 26px;
+  font-size: 24px;
 }
 
 .jedi.active {
@@ -125,54 +222,57 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   width: 100%;
-  max-width: 340px;
+  max-width: 360px;
+  flex-shrink: 0;
 }
 
 .gyroBtn {
   width: 100%;
-  padding: 12px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.2);
+  padding: 11px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.18);
   border-radius: 10px;
   color: #fff;
   font-size: 13px;
   transition: background 0.2s;
+  cursor: pointer;
 }
 
 .gyroBtn:not(:disabled):hover {
-  background: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.13);
 }
 
 .pill {
   font-family: var(--font-body);
   font-size: 12px;
-  color: #666;
+  color: #555;
   padding: 4px 12px;
   border-radius: 20px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
   transition: color 0.3s, background 0.3s;
 }
 
 .pill.ok {
   color: #00E676;
-  background: rgba(0, 230, 118, 0.08);
+  background: rgba(0, 230, 118, 0.07);
 }
 
 /* Start button */
 .startBtn {
   width: 100%;
-  max-width: 340px;
-  padding: 16px;
+  max-width: 360px;
+  padding: 15px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--side-color) 0%, rgba(0,0,0,0) 100%);
-  background-color: var(--side-color);
+  background: var(--side-color);
   color: #000;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 0.15em;
   transition: opacity 0.2s, transform 0.1s;
-  box-shadow: 0 0 24px rgba(0,191,255,0.3);
+  box-shadow: 0 0 24px rgba(0,191,255,0.25);
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .startBtn:not(:disabled):active {
@@ -180,7 +280,8 @@
 }
 
 .startBtn:disabled {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.25);
   box-shadow: none;
+  cursor: not-allowed;
 }
