@@ -29,10 +29,18 @@
 
 .label {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 8px;
   color: #aaa;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.labelReady {
+  color: var(--side-color);
+  text-shadow: 0 0 8px var(--side-color);
+  animation: labelPulse 0.8s ease-in-out infinite alternate;
+  font-size: 7px;
 }
 
 .val {
@@ -47,15 +55,25 @@
 .barTrack {
   flex: 1;
   height: 6px;
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.12);
   border-radius: 3px;
   overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.barTrackReady {
+  box-shadow: 0 0 8px var(--side-color), 0 0 16px color-mix(in srgb, var(--side-color) 50%, transparent);
+  animation: trackPulse 0.9s ease-in-out infinite alternate;
 }
 
 .barFill {
   height: 100%;
   border-radius: 3px;
   transition: width 0.15s ease, background 0.3s ease;
+}
+
+.barFillReady {
+  animation: fillShimmer 1.2s linear infinite;
 }
 
 .waveLabel {
@@ -70,24 +88,40 @@
 .combo {
   text-align: right;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--gold);
   letter-spacing: 0.05em;
   margin-top: 2px;
-  text-shadow: 0 0 12px var(--gold);
-  animation: comboPulse 0.3s ease;
+  text-shadow: 0 0 16px var(--gold);
+  animation: comboPop 0.25s cubic-bezier(0.3, 1.6, 0.5, 1) both;
 }
 
 .hint {
   text-align: center;
   font-family: var(--font-body);
   font-size: 9px;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.28);
   margin-top: 3px;
   letter-spacing: 0.08em;
 }
 
-@keyframes comboPulse {
-  from { transform: scale(1.3); opacity: 0.6; }
+@keyframes comboPop {
+  from { transform: scale(1.5); opacity: 0.5; }
   to   { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes labelPulse {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+
+@keyframes trackPulse {
+  from { box-shadow: 0 0 6px var(--side-color), 0 0 12px color-mix(in srgb, var(--side-color) 40%, transparent); }
+  to   { box-shadow: 0 0 12px var(--side-color), 0 0 24px color-mix(in srgb, var(--side-color) 60%, transparent); }
+}
+
+@keyframes fillShimmer {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.4); }
+  100% { filter: brightness(1); }
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import useGameStore from './store/gameStore.js'
 import CrawlScreen from './screens/CrawlScreen.jsx'
 import IntroScreen from './screens/IntroScreen.jsx'
@@ -11,6 +11,17 @@ export default function App() {
   const screen = useGameStore(st => st.screen)
   const mode   = useGameStore(st => st.mode)
   const [crawlDone, setCrawlDone] = useState(false)
+  const [hyperspace, setHyperspace] = useState(false)
+  const prevScreen = useRef(null)
+
+  useEffect(() => {
+    if (prevScreen.current === 'intro' && screen === 'game') {
+      setHyperspace(true)
+      const t = setTimeout(() => setHyperspace(false), 850)
+      return () => clearTimeout(t)
+    }
+    prevScreen.current = screen
+  }, [screen])
 
   if (!crawlDone) return <CrawlScreen onDone={() => setCrawlDone(true)} />
 
@@ -24,6 +35,7 @@ export default function App() {
       {isGame  && <GameScreen />}
       {screen === 'end'   && <EndScreen />}
       {screen === 'intro' && <IntroScreen />}
+      {hyperspace && <div className="hyperspace-overlay" />}
     </>
   )
 }

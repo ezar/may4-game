@@ -3,6 +3,7 @@ import useGameStore from '../store/gameStore.js'
 import { tryActivateControls } from '../game/controls.js'
 import { startMusic } from '../game/audioEngine.js'
 import { useT } from '../i18n/index.js'
+import { VERSION } from '../components/SettingsPanel.jsx'
 import s from './IntroScreen.module.css'
 
 function useStarfield(canvasRef) {
@@ -267,6 +268,8 @@ export default function IntroScreen() {
           {side && needsGyro && ctrlMode === 0 && <p className={s.hint}>{t.intro.hintGyro}</p>}
         </footer>
       </div>
+
+      <div className={s.versionChip}>v{VERSION}</div>
     </div>
   )
 }

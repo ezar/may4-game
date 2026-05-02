@@ -4,6 +4,8 @@ import { startMusic, stopMusic } from '../game/audioEngine.js'
 import { useT } from '../i18n/index.js'
 import s from './SettingsPanel.module.css'
 
+export const VERSION = '26.05.02.1538'
+
 export default function SettingsPanel() {
   const [open, setOpen] = useState(false)
   const panelRef = useRef(null)
@@ -67,6 +69,15 @@ export default function SettingsPanel() {
             <button className={`${s.toggle} ${s.toggleOn}`} onClick={toggleLang}>
               {lang === 'es' ? 'EN' : 'ES'}
             </button>
+          </div>
+
+          <div className={s.versionBlock}>
+            <div className={s.versionNum}>v{VERSION}</div>
+            <div className={s.copyright}>© 2026 · Fan game · Not for commercial use</div>
+            <div className={s.disclaimer}>
+              Star Wars™ &amp; © Lucasfilm Ltd.<br />
+              Not affiliated with Disney or Lucasfilm.
+            </div>
           </div>
         </div>
       )}

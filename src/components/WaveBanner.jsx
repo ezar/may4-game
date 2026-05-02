@@ -10,16 +10,21 @@ export default function WaveBanner() {
 
   useEffect(() => {
     setVisible(true)
-    const timer = setTimeout(() => setVisible(false), 2600)
+    const timer = setTimeout(() => setVisible(false), 2800)
     return () => clearTimeout(timer)
   }, [wave])
 
   const msg = t.waves.messages[wave - 1] ?? t.waves.messages[0]
+  // msg: [num_label, location, subtitle]
+  const numLabel = msg[0]
+  const location = msg[1]
+  const subtitle = msg[2]
 
   return (
     <div className={`${s.banner} ${visible ? s.visible : ''}`}>
-      <div className={s.sub}>{msg[0]}</div>
-      <div className={s.title}>{msg[1]}</div>
+      <div className={s.num}>{numLabel}</div>
+      <div className={s.location}>{location}</div>
+      <div className={s.title}>{subtitle}</div>
     </div>
   )
 }
