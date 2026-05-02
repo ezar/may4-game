@@ -373,6 +373,8 @@ export function startMusic() {
   tick()
 }
 
+export function resumeAudio() { ac() }
+
 export function stopMusic() {
   clearTimeout(musicTimer)
   musicTimer = null

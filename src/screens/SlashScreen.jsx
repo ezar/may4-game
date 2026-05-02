@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { createSlashEngine } from '../game/slashEngine.js'
-import { startMusic, stopMusic } from '../game/audioEngine.js'
+import { startMusic, stopMusic, resumeAudio } from '../game/audioEngine.js'
 import { useT } from '../i18n/index.js'
 import s from './SlashScreen.module.css'
 
@@ -29,6 +29,7 @@ export default function SlashScreen() {
     function ensureMusic() {
       if (!musicStarted.current) {
         musicStarted.current = true
+        resumeAudio()
         if (useGameStore.getState().musicEnabled) startMusic()
       }
     }

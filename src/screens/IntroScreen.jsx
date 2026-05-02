@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { tryActivateControls } from '../game/controls.js'
-import { startMusic } from '../game/audioEngine.js'
+import { startMusic, resumeAudio } from '../game/audioEngine.js'
 import { useT } from '../i18n/index.js'
 import { VERSION } from '../components/SettingsPanel.jsx'
 import s from './IntroScreen.module.css'
@@ -69,9 +69,10 @@ export default function IntroScreen() {
 
   useEffect(() => {
     function onFirstGesture() {
-      if (!musicStarted.current && useGameStore.getState().musicEnabled) {
+      if (!musicStarted.current) {
         musicStarted.current = true
-        startMusic()
+        resumeAudio()
+        if (useGameStore.getState().musicEnabled) startMusic()
       }
     }
     window.addEventListener('pointerdown', onFirstGesture, { once: true })

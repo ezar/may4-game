@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { createEngine } from '../game/engine.js'
-import { startMusic, stopMusic } from '../game/audioEngine.js'
+import { startMusic, stopMusic, resumeAudio } from '../game/audioEngine.js'
 import HUD from '../components/HUD.jsx'
 import Joystick from '../components/Joystick.jsx'
 import WaveBanner from '../components/WaveBanner.jsx'
@@ -28,6 +28,7 @@ export default function GameScreen() {
     function ensureMusic() {
       if (!musicStarted) {
         musicStarted = true
+        resumeAudio()
         if (useGameStore.getState().musicEnabled) startMusic()
       }
     }
