@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Stormtrooper — iconic white armour, T-visor -->
+
+  <!-- Body armour (chest + ab plates) -->
+  <rect x="16" y="38" width="32" height="22" fill="#e8e8f2" rx="4"/>
+  <!-- Centre dividing line -->
+  <rect x="30.5" y="39" width="3" height="20" fill="#d0d0e0" rx="1"/>
+  <!-- Chest plate upper edge -->
+  <rect x="16" y="38" width="32" height="6" fill="#ededf5" rx="4"/>
+  <!-- Ab plate lines -->
+  <rect x="17" y="47" width="30" height="2" fill="#d8d8ea"/>
+  <rect x="17" y="52" width="30" height="2" fill="#d8d8ea"/>
+  <!-- Side torso detail -->
+  <rect x="14" y="42" width="4" height="12" fill="#d8d8ea" rx="2"/>
+  <rect x="46" y="42" width="4" height="12" fill="#d8d8ea" rx="2"/>
+
+  <!-- Shoulder pauldrons -->
+  <ellipse cx="13" cy="39" rx="6" ry="5" fill="#dcdcec"/>
+  <ellipse cx="51" cy="39" rx="6" ry="5" fill="#dcdcec"/>
+
+  <!-- Helmet dome -->
+  <ellipse cx="32" cy="20" rx="18" ry="19" fill="#e8e8f2"/>
+  <!-- Dome highlight -->
+  <ellipse cx="26" cy="12" rx="8" ry="6" fill="rgba(255,255,255,0.35)"/>
+
+  <!-- T-visor — the iconic black strip -->
+  <rect x="14" y="17" width="36" height="13" fill="#111118" rx="3"/>
+  <!-- Visor inner detail -->
+  <rect x="15" y="18" width="34" height="8" fill="#0d0d15" rx="2"/>
+
+  <!-- Nose / chin bumps below visor -->
+  <rect x="25" y="30" width="14" height="6" fill="#dcdcec" rx="2"/>
+  <rect x="27" y="31" width="4" height="4" fill="#c8c8da" rx="1"/>
+  <rect x="33" y="31" width="4" height="4" fill="#c8c8da" rx="1"/>
+
+  <!-- Cheek vents (left) -->
+  <rect x="14" y="28" width="8" height="2" fill="#c8c8da" rx="1"/>
+  <rect x="14" y="31" width="8" height="2" fill="#c8c8da" rx="1"/>
+  <rect x="14" y="34" width="8" height="2" fill="#c8c8da" rx="1"/>
+  <!-- Cheek vents (right) -->
+  <rect x="42" y="28" width="8" height="2" fill="#c8c8da" rx="1"/>
+  <rect x="42" y="31" width="8" height="2" fill="#c8c8da" rx="1"/>
+  <rect x="42" y="34" width="8" height="2" fill="#c8c8da" rx="1"/>
+
+  <!-- Chin piece -->
+  <rect x="20" y="36" width="24" height="5" fill="#d8d8ea" rx="2"/>
+
+  <!-- Blaster (E-11) -->
+  <rect x="48" y="46" width="14" height="4" fill="#555" rx="1"/>
+  <rect x="50" y="44" width="10" height="2" fill="#444" rx="0.5"/>
+  <rect x="60" y="45" width="3" height="6" fill="#444" rx="0.5"/>
+</svg>

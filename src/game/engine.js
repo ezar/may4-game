@@ -5,6 +5,7 @@ import {
   drawEnemy, drawBullet, drawParticle, drawRing,
 } from './renderer.js'
 import { recalibrate, stopControls } from './controls.js'
+import { loadSprites } from './spriteLoader.js'
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)) }
 function dist2(a, b) {
@@ -337,6 +338,7 @@ export function createEngine({ bgCanvas, gameCanvas, store }) {
 
   return {
     start() {
+      loadSprites()   // fire-and-forget; canvas shapes serve as fallback until ready
       resizeCanvases()
       reset()
       running = true

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- TIE Fighter — hexagonal solar panels, spherical cockpit -->
+
+  <!-- Left solar panel (hexagonal) -->
+  <polygon points="2,20 8,10 22,10 22,54 8,54 2,44" fill="#1e2d3c"/>
+  <!-- Panel grid lines -->
+  <line x1="2"  y1="22" x2="22" y2="22" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="2"  y1="28" x2="22" y2="28" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="2"  y1="34" x2="22" y2="34" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="2"  y1="40" x2="22" y2="40" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="2"  y1="46" x2="22" y2="46" stroke="#2a3f52" stroke-width="1"/>
+  <!-- Panel cell dividers (vertical) -->
+  <line x1="10" y1="10" x2="10" y2="54" stroke="#2a3f52" stroke-width="0.8"/>
+  <line x1="16" y1="10" x2="16" y2="54" stroke="#2a3f52" stroke-width="0.8"/>
+  <!-- Panel brim highlight -->
+  <polygon points="2,20 8,10 22,10 22,54 8,54 2,44" fill="none" stroke="#3a5568" stroke-width="1.5"/>
+
+  <!-- Right solar panel (hexagonal) -->
+  <polygon points="62,20 56,10 42,10 42,54 56,54 62,44" fill="#1e2d3c"/>
+  <line x1="62" y1="22" x2="42" y2="22" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="62" y1="28" x2="42" y2="28" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="62" y1="34" x2="42" y2="34" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="62" y1="40" x2="42" y2="40" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="62" y1="46" x2="42" y2="46" stroke="#2a3f52" stroke-width="1"/>
+  <line x1="54" y1="10" x2="54" y2="54" stroke="#2a3f52" stroke-width="0.8"/>
+  <line x1="48" y1="10" x2="48" y2="54" stroke="#2a3f52" stroke-width="0.8"/>
+  <polygon points="62,20 56,10 42,10 42,54 56,54 62,44" fill="none" stroke="#3a5568" stroke-width="1.5"/>
+
+  <!-- Horizontal strut pylons -->
+  <rect x="22" y="28" width="20" height="8" fill="#3a5060" rx="2"/>
+  <line x1="22" y1="32" x2="42" y2="32" stroke="#4a6070" stroke-width="1"/>
+
+  <!-- Cockpit sphere -->
+  <circle cx="32" cy="32" r="14" fill="#263545"/>
+  <circle cx="32" cy="32" r="13" fill="#1e2d3a"/>
+  <!-- Sphere shading -->
+  <circle cx="32" cy="32" r="13" fill="url(#cockpitGrad)"/>
+
+  <defs>
+    <radialGradient id="cockpitGrad" cx="38%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#3a5060" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0a1520" stop-opacity="0.9"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Cockpit window (viewport) -->
+  <ellipse cx="32" cy="30" rx="9" ry="8" fill="#050e18"/>
+  <!-- Window frame -->
+  <ellipse cx="32" cy="30" rx="9" ry="8" fill="none" stroke="#2a4050" stroke-width="1.5"/>
+  <!-- Window reflection -->
+  <ellipse cx="28" cy="26" rx="3.5" ry="2.5" fill="rgba(80,150,220,0.22)" transform="rotate(-20,28,26)"/>
+  <ellipse cx="34" cy="25" rx="1.5" ry="1" fill="rgba(100,170,240,0.2)"/>
+
+  <!-- Engine glow at bottom of cockpit -->
+  <ellipse cx="32" cy="44" rx="4" ry="3" fill="#0066cc" opacity="0.45"/>
+  <ellipse cx="32" cy="44" rx="2" ry="1.5" fill="#44aaff" opacity="0.5"/>
+</svg>

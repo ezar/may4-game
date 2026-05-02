@@ -1,4 +1,5 @@
 import { SHAPE_BY_EMOJI } from './entityShapes.js'
+import { getSprites } from './spriteLoader.js'
 
 export function clearCanvas(ctx, w, h) {
   ctx.clearRect(0, 0, w, h)
@@ -62,14 +63,22 @@ export function drawPlayerGlow(ctx, { px, py, side }) {
 }
 
 export function drawEnemy(ctx, enemy) {
-  const fn = SHAPE_BY_EMOJI[enemy.emoji]
-  if (fn) {
-    ctx.save()
-    ctx.translate(enemy.x, enemy.y)
+  const sprites = getSprites()
+  const sprite  = sprites[enemy.emoji]
+
+  ctx.save()
+  ctx.translate(enemy.x, enemy.y)
+
+  if (sprite) {
+    const sz = enemy.sz * 1.9
+    ctx.drawImage(sprite, -sz / 2, -sz / 2, sz, sz)
+  } else {
     ctx.scale(enemy.sz / 34, enemy.sz / 34)
-    fn(ctx)
-    ctx.restore()
+    const fn = SHAPE_BY_EMOJI[enemy.emoji]
+    if (fn) fn(ctx)
   }
+
+  ctx.restore()
 
   if (enemy.maxHp > 1) {
     const bw = 36, bh = 4

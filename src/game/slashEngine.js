@@ -1,5 +1,6 @@
 import { playSlash, playCut, playBomb, playLoseLife, playGameOver } from './audioEngine.js'
 import { SHAPE_BY_EMOJI } from './entityShapes.js'
+import { loadSprites, getSprites } from './spriteLoader.js'
 
 const TYPES = [
   { emoji: '🤖', pts: 10, bomb: false },
@@ -268,33 +269,42 @@ export function createSlashEngine({ canvas, store }) {
     ctx.globalAlpha = 1
 
     // Objects
+    const sprites = getSprites()
     objects.forEach(obj => {
-      const fn = SHAPE_BY_EMOJI[obj.emoji]
-      if (!fn) return
       ctx.save()
       ctx.translate(obj.x, obj.y)
       ctx.rotate(obj.rotation)
-      ctx.scale(obj.sz / 34, obj.sz / 34)
-      fn(ctx)
+      const sp = sprites[obj.emoji]
+      if (sp) {
+        const sz = obj.sz * 1.9
+        ctx.drawImage(sp, -sz / 2, -sz / 2, sz, sz)
+      } else {
+        const fn = SHAPE_BY_EMOJI[obj.emoji]
+        if (fn) { ctx.scale(obj.sz / 34, obj.sz / 34); fn(ctx) }
+      }
       ctx.restore()
     })
 
-    // Cut fragments — clip canvas shape to left/right half along slash angle
+    // Cut fragments — clip to left/right half along slash angle
     fragments.forEach(f => {
-      const fn = SHAPE_BY_EMOJI[f.emoji]
-      if (!fn) return
       ctx.save()
       ctx.globalAlpha = Math.max(0, f.life)
       ctx.translate(f.x, f.y)
       ctx.rotate(f.slashAngle)
       ctx.beginPath()
-      const sz = f.sz * 1.5
-      if (f.half === 'left') ctx.rect(-sz, -sz, sz, sz * 2)
-      else                   ctx.rect(0,   -sz, sz, sz * 2)
+      const clipSz = f.sz * 1.9
+      if (f.half === 'left') ctx.rect(-clipSz, -clipSz, clipSz, clipSz * 2)
+      else                   ctx.rect(0,        -clipSz, clipSz, clipSz * 2)
       ctx.clip()
       ctx.rotate(-f.slashAngle + f.rotation)
-      ctx.scale(f.sz / 34, f.sz / 34)
-      fn(ctx)
+      const sp = sprites[f.emoji]
+      if (sp) {
+        const sz = f.sz * 1.9
+        ctx.drawImage(sp, -sz / 2, -sz / 2, sz, sz)
+      } else {
+        const fn = SHAPE_BY_EMOJI[f.emoji]
+        if (fn) { ctx.scale(f.sz / 34, f.sz / 34); fn(ctx) }
+      }
       ctx.globalAlpha = 1
       ctx.restore()
     })
@@ -377,6 +387,7 @@ export function createSlashEngine({ canvas, store }) {
 
   return {
     start() {
+      loadSprites()   // fire-and-forget; sprites load in background
       canvas.width  = window.innerWidth
       canvas.height = window.innerHeight
       stars = initStars(W(), H())
