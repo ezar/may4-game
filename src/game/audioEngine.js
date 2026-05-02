@@ -146,64 +146,126 @@ export function playGameOver() {
 // Using actual melody notes for recognizable Star Wars feel.
 // Synthesized performance ≠ the original recording.
 
-const BPM  = 103
-const Q    = 60 / BPM   // quarter-note duration in seconds ≈ 0.583 s
+const BPM = 103
+const Q   = 60 / BPM   // ≈ 0.583 s per quarter-note
 
-// Melody: G minor, Eb major cross — main motif ×2 (17 beats ≈ 9.9 s loop)
+// ── SECTION A — main march motif (beats 0–17, ≈9.9 s) ───────────────────────
+
 const MARCH_MELODY = [
-  // ── Phrase 1 ──────────────────────
-  [196.00, Q,      Q * 0  ],  // G3
-  [196.00, Q,      Q * 1  ],  // G3
-  [196.00, Q,      Q * 2  ],  // G3
-  [155.56, Q * 1.5, Q * 3 ],  // Eb3  (dotted ♩)
-  [233.08, Q * 0.5, Q * 4.5], // Bb3  (♪)
-  [196.00, Q * 2,  Q * 5  ],  // G3   (half)
-  // ── Phrase 2 ──────────────────────
-  [293.66, Q,      Q * 7  ],  // D4
-  [293.66, Q,      Q * 8  ],  // D4
-  [293.66, Q,      Q * 9  ],  // D4
-  [311.13, Q * 1.5, Q * 10],  // Eb4  (dotted ♩)
-  [233.08, Q * 0.5, Q * 11.5],// Bb3  (♪)
-  [185.00, Q,      Q * 12 ],  // Gb3 (F#3)
-  [155.56, Q * 1.5, Q * 13],  // Eb3  (dotted ♩)
-  [233.08, Q * 0.5, Q * 14.5],// Bb3  (♪)
-  [196.00, Q * 2,  Q * 15 ],  // G3   (half)
+  // Phrase 1
+  [196.00, Q,      Q * 0   ],  // G3
+  [196.00, Q,      Q * 1   ],  // G3
+  [196.00, Q,      Q * 2   ],  // G3
+  [155.56, Q*1.5,  Q * 3   ],  // Eb3 (dotted ♩)
+  [233.08, Q*0.5,  Q * 4.5 ],  // Bb3 (♪)
+  [196.00, Q*2,    Q * 5   ],  // G3  (half)
+  // Phrase 2
+  [293.66, Q,      Q * 7   ],  // D4
+  [293.66, Q,      Q * 8   ],  // D4
+  [293.66, Q,      Q * 9   ],  // D4
+  [311.13, Q*1.5,  Q * 10  ],  // Eb4 (dotted ♩)
+  [233.08, Q*0.5,  Q * 11.5],  // Bb3 (♪)
+  [185.00, Q,      Q * 12  ],  // Gb3
+  [155.56, Q*1.5,  Q * 13  ],  // Eb3 (dotted ♩)
+  [233.08, Q*0.5,  Q * 14.5],  // Bb3 (♪)
+  [196.00, Q*2,    Q * 15  ],  // G3  (half)
 ]
 
-// Bass: one octave below, same rhythm
 const MARCH_BASS = [
-  [ 98.00, Q,      Q * 0  ],  // G2
-  [ 98.00, Q,      Q * 1  ],
-  [ 98.00, Q,      Q * 2  ],
-  [ 77.78, Q * 1.5, Q * 3 ],  // Eb2
-  [116.54, Q * 0.5, Q * 4.5], // Bb2
-  [ 98.00, Q * 2,  Q * 5  ],  // G2
-  [146.83, Q,      Q * 7  ],  // D3
-  [146.83, Q,      Q * 8  ],
-  [146.83, Q,      Q * 9  ],
-  [155.56, Q * 1.5, Q * 10],  // Eb3
-  [116.54, Q * 0.5, Q * 11.5],// Bb2
-  [ 92.50, Q,      Q * 12 ],  // Gb2
-  [ 77.78, Q * 1.5, Q * 13],  // Eb2
-  [116.54, Q * 0.5, Q * 14.5],// Bb2
-  [ 98.00, Q * 2,  Q * 15 ],  // G2
+  [ 98.00, Q,      Q * 0   ],  // G2
+  [ 98.00, Q,      Q * 1   ],
+  [ 98.00, Q,      Q * 2   ],
+  [ 77.78, Q*1.5,  Q * 3   ],  // Eb2
+  [116.54, Q*0.5,  Q * 4.5 ],  // Bb2
+  [ 98.00, Q*2,    Q * 5   ],  // G2
+  [146.83, Q,      Q * 7   ],  // D3
+  [146.83, Q,      Q * 8   ],
+  [146.83, Q,      Q * 9   ],
+  [155.56, Q*1.5,  Q * 10  ],  // Eb3
+  [116.54, Q*0.5,  Q * 11.5],  // Bb2
+  [ 92.50, Q,      Q * 12  ],  // Gb2
+  [ 77.78, Q*1.5,  Q * 13  ],  // Eb2
+  [116.54, Q*0.5,  Q * 14.5],  // Bb2
+  [ 98.00, Q*2,    Q * 15  ],  // G2
 ]
 
-// Timpani accent beats
 const MARCH_DRUMS = [
-  {hz: 98.00,  beat: 0   },
-  {hz: 77.78,  beat: 3   },
-  {hz: 116.54, beat: 4.5 },
-  {hz: 98.00,  beat: 5   },
-  {hz: 146.83, beat: 7   },
-  {hz: 155.56, beat: 10  },
-  {hz: 116.54, beat: 11.5},
-  {hz: 92.50,  beat: 12  },
-  {hz: 77.78,  beat: 13  },
-  {hz: 98.00,  beat: 15  },
+  {hz:  98.00, beat:  0   },
+  {hz:  77.78, beat:  3   },
+  {hz: 116.54, beat:  4.5 },
+  {hz:  98.00, beat:  5   },
+  {hz: 146.83, beat:  7   },
+  {hz: 155.56, beat: 10   },
+  {hz: 116.54, beat: 11.5 },
+  {hz:  92.50, beat: 12   },
+  {hz:  77.78, beat: 13   },
+  {hz:  98.00, beat: 15   },
 ]
 
-const LOOP_DUR = Q * 17  // ≈ 9.9 s
+// ── SECTION B — secondary theme, higher brass (beats 17–35, ≈10.5 s) ─────────
+// G4 → F#4 → F4 → descending phrase → G4 resolution
+
+const B = Q * 17   // section B time offset
+
+const MARCH_B_MELODY = [
+  [392.00, Q*1.5,  B + Q * 0   ],  // G4  (dotted ♩)
+  [293.66, Q*0.5,  B + Q * 1.5 ],  // D4  (♪)
+  [392.00, Q*2,    B + Q * 2   ],  // G4  (half)
+  [369.99, Q*1.5,  B + Q * 4   ],  // F#4 (dotted ♩)
+  [293.66, Q*0.5,  B + Q * 5.5 ],  // D4  (♪)
+  [369.99, Q*2,    B + Q * 6   ],  // F#4 (half)
+  [349.23, Q*1.5,  B + Q * 8   ],  // F4  (dotted ♩)
+  [277.18, Q*0.5,  B + Q * 9.5 ],  // Db4 (♪)
+  [349.23, Q,      B + Q * 10  ],  // F4  (♩)
+  [329.63, Q,      B + Q * 11  ],  // E4  (♩)
+  [311.13, Q*0.5,  B + Q * 12  ],  // Eb4 (♪)
+  [233.08, Q*0.5,  B + Q * 12.5],  // Bb3 (♪)
+  [293.66, Q,      B + Q * 13  ],  // D4  (♩)
+  [369.99, Q,      B + Q * 14  ],  // Gb4 (♩)
+  [466.16, Q,      B + Q * 15  ],  // Bb4 (♩)
+  [392.00, Q*2,    B + Q * 16  ],  // G4  (half) — resolves to A'
+]
+
+const MARCH_B_BASS = [
+  [ 98.00, Q*1.5,  B + Q * 0   ],  // G2
+  [ 73.42, Q*0.5,  B + Q * 1.5 ],  // D2
+  [ 98.00, Q*2,    B + Q * 2   ],  // G2
+  [ 92.50, Q*1.5,  B + Q * 4   ],  // F#2/Gb2
+  [ 73.42, Q*0.5,  B + Q * 5.5 ],  // D2
+  [ 92.50, Q*2,    B + Q * 6   ],  // F#2
+  [ 87.31, Q*1.5,  B + Q * 8   ],  // F2
+  [ 69.30, Q*0.5,  B + Q * 9.5 ],  // Db2
+  [ 87.31, Q,      B + Q * 10  ],  // F2
+  [ 82.41, Q,      B + Q * 11  ],  // E2
+  [ 77.78, Q*0.5,  B + Q * 12  ],  // Eb2
+  [ 58.27, Q*0.5,  B + Q * 12.5],  // Bb1
+  [ 73.42, Q,      B + Q * 13  ],  // D2
+  [ 92.50, Q,      B + Q * 14  ],  // Gb2
+  [116.54, Q,      B + Q * 15  ],  // Bb2
+  [ 98.00, Q*2,    B + Q * 16  ],  // G2
+]
+
+const MARCH_B_DRUMS = [
+  {hz:  98.00, beat: 17   },
+  {hz:  98.00, beat: 19   },
+  {hz:  92.50, beat: 21   },
+  {hz:  92.50, beat: 23   },
+  {hz:  87.31, beat: 25   },
+  {hz:  73.42, beat: 27   },
+  {hz:  77.78, beat: 29   },
+  {hz:  98.00, beat: 33   },
+]
+
+// ── SECTION A' — main motif reprise (beats 35–52, ≈9.9 s) ───────────────────
+
+const A2 = Q * 35   // section A' time offset
+
+const MARCH_A2_MELODY = MARCH_MELODY.map(([hz, dur, at]) => [hz, dur, at + A2])
+const MARCH_A2_BASS   = MARCH_BASS.map(([hz, dur, at])   => [hz, dur, at + A2])
+const MARCH_A2_DRUMS  = MARCH_DRUMS.map(({ hz, beat })   => ({ hz, beat: beat + 35 }))
+
+// ── Total loop: 17 + 18 + 17 = 52 beats ≈ 30.3 s ───────────────────────────
+const LOOP_DUR = Q * 52
 
 // Brass voice: dual detuned sawtooth → lowpass filter with opening attack
 function brass(hz, dur, t, dest, vol = 0.22) {
@@ -278,9 +340,20 @@ function timpani(hz, t, dest) {
 }
 
 function scheduleLoop(t0, dest) {
+  // Section A — main march motif
   MARCH_MELODY.forEach(([hz, dur, at]) => brass(hz, dur, t0 + at, dest))
   MARCH_BASS.forEach(([hz, dur, at])   => bass(hz, dur, t0 + at, dest))
   MARCH_DRUMS.forEach(({hz, beat})     => timpani(hz, t0 + beat * Q, dest))
+
+  // Section B — secondary theme (upper register)
+  MARCH_B_MELODY.forEach(([hz, dur, at]) => brass(hz, dur, t0 + at, dest, 0.20))
+  MARCH_B_BASS.forEach(([hz, dur, at])   => bass(hz, dur, t0 + at, dest))
+  MARCH_B_DRUMS.forEach(({hz, beat})     => timpani(hz, t0 + beat * Q, dest))
+
+  // Section A' — main motif reprise
+  MARCH_A2_MELODY.forEach(([hz, dur, at]) => brass(hz, dur, t0 + at, dest))
+  MARCH_A2_BASS.forEach(([hz, dur, at])   => bass(hz, dur, t0 + at, dest))
+  MARCH_A2_DRUMS.forEach(({hz, beat})     => timpani(hz, t0 + beat * Q, dest))
 }
 
 export function startMusic() {
