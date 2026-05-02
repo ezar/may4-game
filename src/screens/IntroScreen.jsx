@@ -4,7 +4,15 @@ import { tryActivateControls } from '../game/controls.js'
 import { startMusic, resumeAudio } from '../game/audioEngine.js'
 import { useT } from '../i18n/index.js'
 import { VERSION } from '../components/SettingsPanel.jsx'
+import { SPRITE_PATHS } from '../game/spriteLoader.js'
 import s from './IntroScreen.module.css'
+
+const BASE = import.meta.env.BASE_URL ?? '/'
+function EnemyImg({ emoji, name }) {
+  const path = SPRITE_PATHS[emoji]
+  if (path) return <img src={BASE + path} className={s.enemySprite} alt={name} />
+  return <span className={s.enemyEmoji}>{emoji}</span>
+}
 
 function useStarfield(canvasRef) {
   useEffect(() => {
@@ -185,10 +193,15 @@ export default function IntroScreen() {
 
         <footer className={s.footer}>
           {needsGyro && (
-            <div className={s.ctrlRow}>
-              <button className={s.gyroBtn} onClick={handleActivate} disabled={detecting}>
-                {detecting ? t.general.detecting : t.intro.activateGyro}
-              </button>
+            <div className={s.ctrlCol}>
+              <div className={s.ctrlRow}>
+                <button className={s.gyroBtn} onClick={handleActivate} disabled={detecting}>
+                  {detecting ? t.general.detecting : t.intro.activateGyro}
+                </button>
+                <button className={s.touchBtn} onClick={() => useGameStore.getState().setCtrlMode(3)}>
+                  {t.intro.activateTouch}
+                </button>
+              </div>
               <div className={`${s.pill} ${pill.cls}`}>{pill.text}</div>
             </div>
           )}
@@ -246,7 +259,7 @@ export default function IntroScreen() {
             <div className={s.enemyGrid}>
               {(isSlashMode ? t.intro.slashObjects : t.intro.enemies).map((e, i) => (
                 <div key={e.name} className={s.enemyCard} style={{ animationDelay: `${i * 0.06}s` }}>
-                  <span className={s.enemyEmoji}>{e.emoji}</span>
+                  <EnemyImg emoji={e.emoji} name={e.name} />
                   <div className={s.enemyName}>{e.name}</div>
                   <div className={s.enemyDetail}>{e.detail}</div>
                   {e.note && <div className={s.enemyNote}>{e.note}</div>}

@@ -1,4 +1,4 @@
-const SPRITE_PATHS = {
+export const SPRITE_PATHS = {
   '🤖': 'sprites/droid.svg',
   '👾': 'sprites/trooper.svg',
   '🛸': 'sprites/tie.svg',

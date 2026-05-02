@@ -383,6 +383,13 @@
 
 .enemyEmoji { font-size: 30px; }
 
+.enemySprite {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+
 .enemyName {
   font-family: var(--font-display);
   font-size: 11px;
@@ -472,6 +479,13 @@
   animation: fadeUp 0.8s 0.35s ease both;
 }
 
+.ctrlCol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
 .ctrlRow {
   display: flex;
   align-items: center;
@@ -494,6 +508,20 @@
 
 .gyroBtn:not(:disabled):hover { background: rgba(255,255,255,0.12); }
 .gyroBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.touchBtn {
+  flex: 1;
+  padding: 11px 12px;
+  background: rgba(0,191,255,0.07);
+  border: 1px solid rgba(0,191,255,0.22);
+  border-radius: 10px;
+  color: rgba(0,191,255,0.85);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.touchBtn:hover { background: rgba(0,191,255,0.14); }
 
 .pill {
   font-family: var(--font-body);
