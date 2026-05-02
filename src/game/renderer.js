@@ -1,3 +1,5 @@
+import { SHAPE_BY_EMOJI } from './entityShapes.js'
+
 export function clearCanvas(ctx, w, h) {
   ctx.clearRect(0, 0, w, h)
 }
@@ -22,40 +24,27 @@ export function drawPlayer(ctx, { px, py, side }) {
   ctx.save()
   ctx.translate(px, py)
 
-  // Body
   ctx.fillStyle = '#667'
   ctx.beginPath()
   ctx.ellipse(0, 14, 11, 14, 0, 0, Math.PI * 2)
   ctx.fill()
 
-  // Head
   ctx.fillStyle = '#99a'
   ctx.beginPath()
   ctx.arc(0, -8, 11, 0, Math.PI * 2)
   ctx.fill()
 
-  // Visor
   ctx.fillStyle = color
-  ctx.shadowBlur = 8
-  ctx.shadowColor = color
-  ctx.beginPath()
-  ctx.roundRect(-8, -14, 16, 7, 3)
-  ctx.fill()
+  ctx.shadowBlur = 8; ctx.shadowColor = color
+  ctx.beginPath(); ctx.roundRect(-8, -14, 16, 7, 3); ctx.fill()
   ctx.shadowBlur = 0
 
-  // Saber handle
   ctx.fillStyle = '#888'
-  ctx.beginPath()
-  ctx.roundRect(10, 2, 4, 12, 1)
-  ctx.fill()
+  ctx.beginPath(); ctx.roundRect(10, 2, 4, 12, 1); ctx.fill()
 
-  // Saber blade
   ctx.fillStyle = color
-  ctx.shadowBlur = 12
-  ctx.shadowColor = color
-  ctx.beginPath()
-  ctx.roundRect(11, -18, 2, 20, 1)
-  ctx.fill()
+  ctx.shadowBlur = 12; ctx.shadowColor = color
+  ctx.beginPath(); ctx.roundRect(11, -18, 2, 20, 1); ctx.fill()
   ctx.shadowBlur = 0
 
   ctx.restore()
@@ -73,34 +62,32 @@ export function drawPlayerGlow(ctx, { px, py, side }) {
 }
 
 export function drawEnemy(ctx, enemy) {
-  ctx.save()
-  ctx.font = `${enemy.sz}px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif`
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(enemy.emoji, enemy.x, enemy.y)
+  const fn = SHAPE_BY_EMOJI[enemy.emoji]
+  if (fn) {
+    ctx.save()
+    ctx.translate(enemy.x, enemy.y)
+    ctx.scale(enemy.sz / 34, enemy.sz / 34)
+    fn(ctx)
+    ctx.restore()
+  }
 
   if (enemy.maxHp > 1) {
     const bw = 36, bh = 4
     const bx = enemy.x - bw / 2
-    const by = enemy.y + enemy.sz / 2 + 2
+    const by = enemy.y + enemy.sz / 2 + 4
+    ctx.save()
     ctx.fillStyle = '#222'
-    ctx.beginPath()
-    ctx.roundRect(bx, by, bw, bh, 2)
-    ctx.fill()
+    ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 2); ctx.fill()
     ctx.fillStyle = '#FF6B00'
-    ctx.beginPath()
-    ctx.roundRect(bx, by, bw * (enemy.hp / enemy.maxHp), bh, 2)
-    ctx.fill()
+    ctx.beginPath(); ctx.roundRect(bx, by, bw * (enemy.hp / enemy.maxHp), bh, 2); ctx.fill()
+    ctx.restore()
   }
-
-  ctx.restore()
 }
 
 export function drawBullet(ctx, bullet) {
   ctx.save()
   ctx.fillStyle = bullet.color
-  ctx.shadowBlur = 10
-  ctx.shadowColor = bullet.color
+  ctx.shadowBlur = 10; ctx.shadowColor = bullet.color
   ctx.beginPath()
   ctx.arc(bullet.x, bullet.y, bullet.r, 0, Math.PI * 2)
   ctx.fill()
@@ -112,8 +99,7 @@ export function drawParticle(ctx, p) {
   ctx.save()
   ctx.globalAlpha = Math.max(0, p.life)
   ctx.fillStyle = p.color
-  ctx.shadowBlur = 6
-  ctx.shadowColor = p.color
+  ctx.shadowBlur = 6; ctx.shadowColor = p.color
   ctx.beginPath()
   ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2)
   ctx.fill()
@@ -128,8 +114,7 @@ export function drawRing(ctx, ring, side) {
   ctx.globalAlpha = Math.max(0, ring.life) * 0.8
   ctx.strokeStyle = color
   ctx.lineWidth = ring.blast ? 5 : 2
-  ctx.shadowBlur = 20
-  ctx.shadowColor = color
+  ctx.shadowBlur = 20; ctx.shadowColor = color
   ctx.beginPath()
   ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2)
   ctx.stroke()

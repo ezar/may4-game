@@ -143,6 +143,14 @@ export const T = {
         '«La galaxia necesita un héroe.»',
       ],
     },
+    settings: {
+      title: 'AJUSTES',
+      music: 'Música',
+      sfx: 'Efectos',
+      language: 'Idioma',
+      on: 'ON',
+      off: 'OFF',
+    },
     slashQuotes: [
       '"El sable de luz es la vida del Jedi." — Obi-Wan Kenobi',
       '"Corta primero, pregunta después." — Sabiduría Sith',
@@ -293,6 +301,14 @@ export const T = {
         '"Never underestimate the Empire."',
         '"The galaxy needs a hero."',
       ],
+    },
+    settings: {
+      title: 'SETTINGS',
+      music: 'Music',
+      sfx: 'Effects',
+      language: 'Language',
+      on: 'ON',
+      off: 'OFF',
     },
     slashQuotes: [
       '"The lightsaber is the life of the Jedi." — Obi-Wan Kenobi',

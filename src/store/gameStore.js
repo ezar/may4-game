@@ -14,6 +14,7 @@ const useGameStore = create((set) => ({
   tiltX:    0,
   tiltY:    0,
   lang: (typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('es')) ? 'es' : 'en',
+  musicEnabled: true,
 
   setSide:     (side)         => set({ side }),
   setCtrlMode: (ctrlMode)     => set({ ctrlMode }),
@@ -22,7 +23,8 @@ const useGameStore = create((set) => ({
   setTilt:     (tiltX, tiltY) => set({ tiltX, tiltY }),
   updateStats: (stats)        => set(stats),
   setResult:   (result)       => set({ result }),
-  setLang:     (lang)         => set({ lang }),
+  setLang:          (lang)    => set({ lang }),
+  setMusicEnabled:  (v)      => set({ musicEnabled: v }),
   resetGame:   () => set({
     score: 0, health: 100, force: 0, wave: 1, combo: 0,
     result: null, tiltX: 0, tiltY: 0, screen: 'intro',

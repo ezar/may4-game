@@ -26,7 +26,10 @@ export default function GameScreen() {
 
     let musicStarted = false
     function ensureMusic() {
-      if (!musicStarted) { musicStarted = true; startMusic() }
+      if (!musicStarted) {
+        musicStarted = true
+        if (useGameStore.getState().musicEnabled) startMusic()
+      }
     }
 
     // Touch → deflect via custom event

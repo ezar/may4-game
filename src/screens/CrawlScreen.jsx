@@ -76,9 +76,7 @@ export default function CrawlScreen({ onDone }) {
       />
 
       <div className={`${s.longAgo} ${phase === 0 ? s.longAgoVisible : ''}`}>
-        {t.crawl.longAgo.split('\n').map((line, i) => (
-          <span key={i}>{line}{i < t.crawl.longAgo.split('\n').length - 1 && <br />}</span>
-        ))}
+        {t.crawl.longAgo}
       </div>
 
       {phase === 1 && (

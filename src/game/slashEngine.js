@@ -1,6 +1,5 @@
 import { playSlash, playCut, playBomb, playLoseLife, playGameOver } from './audioEngine.js'
-
-const EMOJI_FONT = "'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',serif"
+import { SHAPE_BY_EMOJI } from './entityShapes.js'
 
 const TYPES = [
   { emoji: '🤖', pts: 10, bomb: false },
@@ -270,38 +269,32 @@ export function createSlashEngine({ canvas, store }) {
 
     // Objects
     objects.forEach(obj => {
+      const fn = SHAPE_BY_EMOJI[obj.emoji]
+      if (!fn) return
       ctx.save()
       ctx.translate(obj.x, obj.y)
-      if (obj.bomb) {
-        // Subtle red glow on bombs
-        ctx.shadowBlur = 12 + Math.sin(Date.now() * 0.008) * 6
-        ctx.shadowColor = '#FF1744'
-      }
       ctx.rotate(obj.rotation)
-      ctx.font = `${obj.sz}px ${EMOJI_FONT}`
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText(obj.emoji, 0, 0)
-      ctx.shadowBlur = 0
+      ctx.scale(obj.sz / 34, obj.sz / 34)
+      fn(ctx)
       ctx.restore()
     })
 
-    // Cut fragments (emoji halves, clipped by slash angle)
+    // Cut fragments — clip canvas shape to left/right half along slash angle
     fragments.forEach(f => {
+      const fn = SHAPE_BY_EMOJI[f.emoji]
+      if (!fn) return
       ctx.save()
       ctx.globalAlpha = Math.max(0, f.life)
       ctx.translate(f.x, f.y)
       ctx.rotate(f.slashAngle)
       ctx.beginPath()
-      const sz = f.sz * 1.4
+      const sz = f.sz * 1.5
       if (f.half === 'left') ctx.rect(-sz, -sz, sz, sz * 2)
       else                   ctx.rect(0,   -sz, sz, sz * 2)
       ctx.clip()
       ctx.rotate(-f.slashAngle + f.rotation)
-      ctx.font = `${f.sz}px ${EMOJI_FONT}`
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText(f.emoji, 0, 0)
+      ctx.scale(f.sz / 34, f.sz / 34)
+      fn(ctx)
       ctx.globalAlpha = 1
       ctx.restore()
     })

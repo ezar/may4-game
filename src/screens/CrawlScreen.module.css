@@ -27,6 +27,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: pre-line;
   font-family: var(--font-body);
   font-style: italic;
   font-weight: 300;

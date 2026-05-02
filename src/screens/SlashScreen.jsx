@@ -27,7 +27,10 @@ export default function SlashScreen() {
     let dragging = false
 
     function ensureMusic() {
-      if (!musicStarted.current) { musicStarted.current = true; startMusic() }
+      if (!musicStarted.current) {
+        musicStarted.current = true
+        if (useGameStore.getState().musicEnabled) startMusic()
+      }
     }
 
     function getPos(clientX, clientY) {
