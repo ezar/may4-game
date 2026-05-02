@@ -112,6 +112,7 @@ export default function IntroScreen() {
       <canvas ref={canvasRef} className={s.starfield} />
 
       <div className={s.content}>
+        <div className={s.leftCol}>
         <header className={s.logo}>
           <div className={s.logoEyebrow}>{t.general.starWarsDay}</div>
           <div className={s.may}>{t.general.mayThe4th}</div>
@@ -181,7 +182,29 @@ export default function IntroScreen() {
           </div>
         </section>
 
-        <section className={s.howTo}>
+        <footer className={s.footer}>
+          {needsGyro && (
+            <div className={s.ctrlRow}>
+              <button className={s.gyroBtn} onClick={handleActivate} disabled={detecting}>
+                {detecting ? t.general.detecting : t.intro.activateGyro}
+              </button>
+              <div className={`${s.pill} ${pill.cls}`}>{pill.text}</div>
+            </div>
+          )}
+
+          <button className={s.startBtn} onClick={handleStart} disabled={!canStart}>
+            {canStart
+              ? t.intro.startLabel(mode, side)
+              : t.intro.startDefault}
+          </button>
+
+          {!side && <p className={s.hint}>{t.intro.hintSide}</p>}
+          {side && !mode && <p className={s.hint}>{t.intro.hintMode}</p>}
+          {side && needsGyro && ctrlMode === 0 && <p className={s.hint}>{t.intro.hintGyro}</p>}
+        </footer>
+        </div>{/* leftCol */}
+
+        <section className={s.howToCol}>
           <div className={s.tabs}>
             <button
               className={`${s.tab} ${tab === 'play' ? s.tabActive : ''}`}
@@ -246,27 +269,6 @@ export default function IntroScreen() {
             </div>
           )}
         </section>
-
-        <footer className={s.footer}>
-          {needsGyro && (
-            <div className={s.ctrlRow}>
-              <button className={s.gyroBtn} onClick={handleActivate} disabled={detecting}>
-                {detecting ? t.general.detecting : t.intro.activateGyro}
-              </button>
-              <div className={`${s.pill} ${pill.cls}`}>{pill.text}</div>
-            </div>
-          )}
-
-          <button className={s.startBtn} onClick={handleStart} disabled={!canStart}>
-            {canStart
-              ? t.intro.startLabel(mode, side)
-              : t.intro.startDefault}
-          </button>
-
-          {!side && <p className={s.hint}>{t.intro.hintSide}</p>}
-          {side && !mode && <p className={s.hint}>{t.intro.hintMode}</p>}
-          {side && needsGyro && ctrlMode === 0 && <p className={s.hint}>{t.intro.hintGyro}</p>}
-        </footer>
       </div>
 
       <div className={s.versionChip}>v{VERSION}</div>
