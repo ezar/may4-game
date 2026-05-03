@@ -1,6 +1,11 @@
 // Synthesized audio — no external files required
 
 let ctx = null, masterGain = null, musicGain = null, musicTimer = null
+let _sfxEnabled = (() => {
+  try { return localStorage.getItem('sw-sfxEnabled') !== 'false' } catch { return true }
+})()
+
+export function setSfxEnabled(v) { _sfxEnabled = v }
 
 function ac() {
   if (!ctx) {
@@ -28,9 +33,12 @@ function chain(...nodes) {
   for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1])
 }
 
+export function resumeAudio() { ac() }
+
 // ── Sound Effects ────────────────────────────────────────────────────────────
 
 export function playSlash() {
+  if (!_sfxEnabled) return
   const a = ac()
   const t = a.currentTime
   const src = createNoise(0.11)
@@ -48,6 +56,7 @@ export function playSlash() {
 }
 
 export function playCut(combo = 1) {
+  if (!_sfxEnabled) return
   const a = ac()
   const t = a.currentTime
   const freq = 480 + combo * 65
@@ -80,6 +89,7 @@ export function playCut(combo = 1) {
 }
 
 export function playBomb() {
+  if (!_sfxEnabled) return
   const a = ac()
   const t = a.currentTime
   const o = a.createOscillator()
@@ -104,6 +114,7 @@ export function playBomb() {
 }
 
 export function playLoseLife() {
+  if (!_sfxEnabled) return
   const a = ac()
   const t = a.currentTime
   ;[392, 349.23, 311.13, 261.63].forEach((hz, i) => {
@@ -120,6 +131,7 @@ export function playLoseLife() {
 }
 
 export function playGameOver() {
+  if (!_sfxEnabled) return
   const a = ac()
   const t = a.currentTime
   // Imperial March descending phrase (game-over fanfare)
@@ -267,35 +279,60 @@ const MARCH_A2_DRUMS  = MARCH_DRUMS.map(({ hz, beat })   => ({ hz, beat: beat + 
 // ── Total loop: 17 + 18 + 17 = 52 beats ≈ 30.3 s ───────────────────────────
 const LOOP_DUR = Q * 52
 
-// Brass voice: dual detuned sawtooth → lowpass filter with opening attack
+// Brass voice: three detuned sawtooths + vibrato LFO → bandpass + lowpass
 function brass(hz, dur, t, dest, vol = 0.22) {
   const a = ac()
+
+  // Vibrato LFO (starts after attack settles)
+  const lfo = a.createOscillator()
+  lfo.frequency.value = 5.5
+  const lfoGain = a.createGain()
+  lfoGain.gain.setValueAtTime(0, t)
+  lfoGain.gain.linearRampToValueAtTime(hz * 0.008, t + 0.18)
+  lfo.connect(lfoGain)
+
   const o1 = a.createOscillator()
   const o2 = a.createOscillator()
-  o1.type = o2.type = 'sawtooth'
+  const o3 = a.createOscillator()
+  o1.type = o2.type = o3.type = 'sawtooth'
   o1.frequency.value = hz
-  o2.frequency.value = hz * 1.007   // slight chorus
+  o2.frequency.value = hz * 1.008
+  o3.frequency.value = hz * 0.993
+  lfoGain.connect(o1.frequency)
+  lfoGain.connect(o2.frequency)
+  lfoGain.connect(o3.frequency)
 
+  // Bandpass boost for brass "buzz" around 1-2 kHz
+  const bp = a.createBiquadFilter()
+  bp.type = 'peaking'
+  bp.frequency.value = 1400
+  bp.Q.value = 1.2
+  bp.gain.value = 5
+
+  // Lowpass with brighter opening sweep
   const filt = a.createBiquadFilter()
   filt.type = 'lowpass'
-  filt.Q.value = 1.8
-  filt.frequency.setValueAtTime(180, t)
-  filt.frequency.exponentialRampToValueAtTime(2000, t + 0.07)
-  filt.frequency.linearRampToValueAtTime(1100, t + 0.22)
+  filt.Q.value = 2.2
+  filt.frequency.setValueAtTime(200, t)
+  filt.frequency.exponentialRampToValueAtTime(3200, t + 0.055)
+  filt.frequency.linearRampToValueAtTime(1600, t + 0.2)
+  filt.frequency.linearRampToValueAtTime(1200, t + Math.max(0.25, dur * 0.7))
 
   const g = a.createGain()
   g.gain.setValueAtTime(0, t)
-  g.gain.linearRampToValueAtTime(vol, t + 0.06)
-  g.gain.setValueAtTime(vol * 0.78, t + Math.max(0.08, dur - 0.07))
+  g.gain.linearRampToValueAtTime(vol, t + 0.055)
+  g.gain.setValueAtTime(vol * 0.82, t + Math.max(0.1, dur - 0.08))
   g.gain.linearRampToValueAtTime(0, t + dur)
 
   const mix = a.createGain()
-  mix.gain.value = 0.5
-  o1.connect(mix)
-  o2.connect(mix)
-  chain(mix, filt, g, dest)
-  o1.start(t); o1.stop(t + dur + 0.04)
-  o2.start(t); o2.stop(t + dur + 0.04)
+  mix.gain.value = 0.38
+  o1.connect(mix); o2.connect(mix); o3.connect(mix)
+  chain(mix, bp, filt, g, dest)
+  lfo.start(t)
+  o1.start(t); o1.stop(t + dur + 0.05)
+  o2.start(t); o2.stop(t + dur + 0.05)
+  o3.start(t); o3.stop(t + dur + 0.05)
+  lfo.stop(t + dur + 0.05)
 }
 
 // Bass voice: sawtooth, tight lowpass
