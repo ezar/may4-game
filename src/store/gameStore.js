@@ -3,8 +3,9 @@ import { create } from 'zustand'
 const _ls = (k, fallback) => {
   try { const v = localStorage.getItem(k); return v === null ? fallback : v } catch { return fallback }
 }
-const _savedLang = _ls('sw-lang', null)
+const _savedLang  = _ls('sw-lang', null)
 const _savedMusic = _ls('sw-musicEnabled', 'true') === 'true'
+const _savedSfx   = _ls('sw-sfxEnabled',   'true') === 'true'
 
 const useGameStore = create((set) => ({
   side:     null,
@@ -21,6 +22,7 @@ const useGameStore = create((set) => ({
   tiltY:    0,
   lang: _savedLang ?? ((typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('es')) ? 'es' : 'en'),
   musicEnabled: _savedMusic,
+  sfxEnabled:   _savedSfx,
 
   setSide:     (side)         => set({ side }),
   setCtrlMode: (ctrlMode)     => set({ ctrlMode }),
@@ -36,6 +38,10 @@ const useGameStore = create((set) => ({
   setMusicEnabled: (v) => {
     try { localStorage.setItem('sw-musicEnabled', String(v)) } catch {}
     set({ musicEnabled: v })
+  },
+  setSfxEnabled: (v) => {
+    try { localStorage.setItem('sw-sfxEnabled', String(v)) } catch {}
+    set({ sfxEnabled: v })
   },
   resetGame:   () => set({
     score: 0, health: 100, force: 0, wave: 1, combo: 0,

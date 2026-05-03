@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import useGameStore from '../store/gameStore.js'
-import { startMusic, stopMusic } from '../game/audioEngine.js'
+import { startMusic, stopMusic, setSfxEnabled } from '../game/audioEngine.js'
 import { useT } from '../i18n/index.js'
 import s from './SettingsPanel.module.css'
 
@@ -11,10 +11,12 @@ export default function SettingsPanel() {
   const panelRef = useRef(null)
   const btnRef   = useRef(null)
 
-  const lang         = useGameStore(st => st.lang)
-  const setLang      = useGameStore(st => st.setLang)
-  const musicEnabled = useGameStore(st => st.musicEnabled)
+  const lang            = useGameStore(st => st.lang)
+  const setLang         = useGameStore(st => st.setLang)
+  const musicEnabled    = useGameStore(st => st.musicEnabled)
   const setMusicEnabled = useGameStore(st => st.setMusicEnabled)
+  const sfxEnabled      = useGameStore(st => st.sfxEnabled)
+  const setSfxEnabledStore = useGameStore(st => st.setSfxEnabled)
   const t = useT()
 
   function toggleMusic() {
@@ -22,6 +24,12 @@ export default function SettingsPanel() {
     setMusicEnabled(next)
     if (next) startMusic()
     else      stopMusic()
+  }
+
+  function toggleSfx() {
+    const next = !sfxEnabled
+    setSfxEnabledStore(next)
+    setSfxEnabled(next)
   }
 
   function toggleLang() {
@@ -61,6 +69,16 @@ export default function SettingsPanel() {
               onClick={toggleMusic}
             >
               {musicEnabled ? t.settings.on : t.settings.off}
+            </button>
+          </div>
+
+          <div className={s.row}>
+            <span className={s.label}>{t.settings.sfx}</span>
+            <button
+              className={`${s.toggle} ${sfxEnabled ? s.toggleOn : s.toggleOff}`}
+              onClick={toggleSfx}
+            >
+              {sfxEnabled ? t.settings.on : t.settings.off}
             </button>
           </div>
 
