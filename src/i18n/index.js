@@ -8,6 +8,8 @@ export const T = {
       beWithYou: 'BE WITH YOU',
       skip: 'Saltar ›',
       detecting: 'Detectando…',
+      may4Today: '✦ QUE LA FUERZA TE ACOMPAÑE ✦',
+      may4Soon: (h, m, s) => `⏳ May the 4th en ${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`,
     },
     crawl: {
       longAgo: 'Hace mucho tiempo, en una galaxia\nmuy, muy lejana...',
@@ -127,6 +129,14 @@ export const T = {
       maestroMode: 'MAESTRO DEL SABLE',
       noCombo: 'Sin combo',
       retry: 'VOLVER A INTENTAR',
+      newRecord: '✦ NUEVO RÉCORD ✦',
+      bestScore: 'Récord',
+      share: '↑ Compartir resultado',
+      shareCopied: '✓ ¡Copiado!',
+      shareText: (score, mode, side) => {
+        const sides = { jedi: 'Jedi', sith: 'Sith' }
+        return `⚔️ Conseguí ${score.toLocaleString()} pts como ${sides[side] ?? ''} en May the 4th!\n#MayThe4th #StarWars`
+      },
       ranks: {
         jedi:  ['GRAN MAESTRO JEDI', 'MAESTRO JEDI', 'CABALLERO JEDI', 'PADAWAN'],
         sith:  ['SEÑOR OSCURO DE LOS SITH', 'LORD SITH', 'APRENDIZ SITH', 'NOVATO SITH'],
@@ -183,6 +193,8 @@ export const T = {
       beWithYou: 'BE WITH YOU',
       skip: 'Skip ›',
       detecting: 'Detecting…',
+      may4Today: '✦ MAY THE FORCE BE WITH YOU ✦',
+      may4Soon: (h, m, s) => `⏳ May the 4th in ${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`,
     },
     crawl: {
       longAgo: 'A long time ago, in a galaxy\nfar, far away...',
@@ -302,6 +314,14 @@ export const T = {
       maestroMode: 'SABER MASTER',
       noCombo: 'No combo',
       retry: 'TRY AGAIN',
+      newRecord: '✦ NEW RECORD ✦',
+      bestScore: 'Best',
+      share: '↑ Share result',
+      shareCopied: '✓ Copied!',
+      shareText: (score, mode, side) => {
+        const sides = { jedi: 'Jedi', sith: 'Sith' }
+        return `⚔️ I scored ${score.toLocaleString()} pts as ${sides[side] ?? ''} on May the 4th!\n#MayThe4th #StarWars`
+      },
       ranks: {
         jedi:  ['GRAND MASTER JEDI', 'JEDI MASTER', 'JEDI KNIGHT', 'PADAWAN'],
         sith:  ['DARK LORD OF THE SITH', 'SITH LORD', 'SITH APPRENTICE', 'SITH RECRUIT'],

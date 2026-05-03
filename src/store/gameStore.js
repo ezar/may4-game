@@ -6,8 +6,11 @@ const _ls = (k, fallback) => {
 const _savedLang  = _ls('sw-lang', null)
 const _savedMusic = _ls('sw-musicEnabled', 'true') === 'true'
 const _savedSfx   = _ls('sw-sfxEnabled',   'true') === 'true'
+const _loadHighScores = () => {
+  try { const v = localStorage.getItem('sw-highscores'); return v ? JSON.parse(v) : {} } catch { return {} }
+}
 
-const useGameStore = create((set) => ({
+const useGameStore = create((set, get) => ({
   side:     null,
   ctrlMode: 0,
   mode:     null,   // 'survival' | 'slash' | 'infinite' | 'maestro'
@@ -23,6 +26,7 @@ const useGameStore = create((set) => ({
   lang: _savedLang ?? ((typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('es')) ? 'es' : 'en'),
   musicEnabled: _savedMusic,
   sfxEnabled:   _savedSfx,
+  highScores:   _loadHighScores(),
 
   setSide:     (side)         => set({ side }),
   setCtrlMode: (ctrlMode)     => set({ ctrlMode }),
@@ -43,7 +47,15 @@ const useGameStore = create((set) => ({
     try { localStorage.setItem('sw-sfxEnabled', String(v)) } catch {}
     set({ sfxEnabled: v })
   },
-  resetGame:   () => set({
+  updateHighScore: (mode, score) => {
+    const prev = get().highScores
+    if ((prev[mode] ?? 0) >= score) return false
+    const next = { ...prev, [mode]: score }
+    try { localStorage.setItem('sw-highscores', JSON.stringify(next)) } catch {}
+    set({ highScores: next })
+    return true
+  },
+  resetGame: () => set({
     score: 0, health: 100, force: 0, wave: 1, combo: 0,
     result: null, tiltX: 0, tiltY: 0, screen: 'intro',
     side: null, ctrlMode: 0, mode: null,

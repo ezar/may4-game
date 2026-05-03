@@ -61,6 +61,30 @@ function useStarfield(canvasRef) {
   }, [])
 }
 
+function useMay4Countdown() {
+  const [label, setLabel] = useState('')
+  const [isToday, setIsToday] = useState(false)
+  useEffect(() => {
+    function tick() {
+      const now   = new Date()
+      const month = now.getMonth() + 1
+      const day   = now.getDate()
+      setIsToday(month === 5 && day === 4)
+      const target = new Date(now.getFullYear(), 4, 4) // May 4
+      if (now >= target) { setLabel(''); return }
+      const diff = target - now
+      const h = Math.floor(diff / 3600000)
+      const m = Math.floor((diff % 3600000) / 60000)
+      const sec = Math.floor((diff % 60000) / 1000)
+      setLabel(`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`)
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+  return { label, isToday }
+}
+
 export default function IntroScreen() {
   const t         = useT()
   const side      = useGameStore(st => st.side)
@@ -73,6 +97,7 @@ export default function IntroScreen() {
   const [tab, setTab] = useState('play')
   const canvasRef     = useRef(null)
   const musicStarted  = useRef(false)
+  const { label: countdownLabel, isToday: isMay4 } = useMay4Countdown()
   useStarfield(canvasRef)
 
   useEffect(() => {
@@ -127,6 +152,12 @@ export default function IntroScreen() {
           <div className={s.may}>{t.general.mayThe4th}</div>
           <div className={s.be}>{t.general.beWithYou}</div>
           <div className={s.divider} />
+          {isMay4 && (
+            <div className={s.may4Banner}>{t.general.may4Today}</div>
+          )}
+          {!isMay4 && countdownLabel && (
+            <div className={s.countdown}>⏳ {countdownLabel}</div>
+          )}
         </header>
 
         <section className={s.sideSection}>

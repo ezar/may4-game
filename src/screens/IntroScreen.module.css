@@ -583,6 +583,28 @@
   to   { text-shadow: 0 0 30px var(--gold), 0 0 80px rgba(255,215,0,0.5), 0 0 120px rgba(255,215,0,0.2); }
 }
 
+/* ── May 4th countdown / banner ─────────────── */
+.may4Banner {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-align: center;
+  margin-top: 10px;
+  text-shadow: 0 0 12px var(--gold), 0 0 28px rgba(255,215,0,0.4);
+  animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+.countdown {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 215, 0, 0.55);
+  text-align: center;
+  margin-top: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── Version chip ────────────────────────────── */
 .versionChip {
   position: absolute;

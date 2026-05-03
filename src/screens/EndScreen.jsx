@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react'
 import useGameStore from '../store/gameStore.js'
 import { useT } from '../i18n/index.js'
 import s from './EndScreen.module.css'
@@ -40,14 +41,25 @@ function Saber({ color, lit }) {
 }
 
 export default function EndScreen() {
-  const t         = useT()
-  const result    = useGameStore(st => st.result)
-  const side      = useGameStore(st => st.side)
-  const score     = useGameStore(st => st.score)
-  const wave      = useGameStore(st => st.wave)
-  const combo     = useGameStore(st => st.combo)
-  const mode      = useGameStore(st => st.mode)
-  const resetGame = useGameStore(st => st.resetGame)
+  const t              = useT()
+  const result         = useGameStore(st => st.result)
+  const side           = useGameStore(st => st.side)
+  const score          = useGameStore(st => st.score)
+  const wave           = useGameStore(st => st.wave)
+  const combo          = useGameStore(st => st.combo)
+  const mode           = useGameStore(st => st.mode)
+  const resetGame      = useGameStore(st => st.resetGame)
+  const highScores     = useGameStore(st => st.highScores)
+  const updateHighScore = useGameStore(st => st.updateHighScore)
+
+  const prevBest   = useRef(highScores[mode] ?? 0)
+  const isNewRecord = score > 0 && score > prevBest.current
+
+  const [shareCopied, setShareCopied] = useState(false)
+
+  useEffect(() => {
+    if (mode && score > 0) updateHighScore(mode, score)
+  }, [])
 
   const isWin      = result === 'win'
   const isSlash    = mode === 'slash'
@@ -70,6 +82,19 @@ export default function EndScreen() {
     resetGame()
   }
 
+  async function handleShare() {
+    const text = t.end.shareText(score, mode, side)
+    if (navigator.share) {
+      try { await navigator.share({ title: 'May the 4th', text }) } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(text)
+        setShareCopied(true)
+        setTimeout(() => setShareCopied(false), 2000)
+      } catch {}
+    }
+  }
+
   function getSubLabel() {
     if (isSlash || isMaestro) {
       const modeLabel = isSlash ? t.end.slashMode : t.end.maestroMode
@@ -82,6 +107,7 @@ export default function EndScreen() {
   const showVictory = isWin && !isSlash && !isMaestro && !isInfinite
   const titleText   = showVictory ? t.end.victory : t.end.gameOver
   const saberLit    = showVictory || isSlash || isMaestro
+  const bestSoFar   = Math.max(prevBest.current, score)
 
   return (
     <div className={`${s.screen} ${showVictory ? s.winScreen : s.loseScreen}`}
@@ -114,9 +140,19 @@ export default function EndScreen() {
         {showVictory && <div className={s.stars}>{t.end.stars}</div>}
 
         <div className={s.scoreBox} style={{ borderColor: `${sideColor}40` }}>
+          {isNewRecord && (
+            <div className={s.newRecord} style={{ color: sideColor }}>
+              {t.end.newRecord}
+            </div>
+          )}
           <div className={s.scoreLabel}>{t.end.finalScore}</div>
           <div className={s.scoreVal}>{score.toLocaleString()}</div>
           <div className={s.waveReached}>{getSubLabel()}</div>
+          {!isNewRecord && bestSoFar > 0 && (
+            <div className={s.bestScore}>
+              {t.end.bestScore}: {bestSoFar.toLocaleString()}
+            </div>
+          )}
         </div>
 
         <div className={s.quote}>{quote}</div>
@@ -124,6 +160,10 @@ export default function EndScreen() {
         <button className={s.retryBtn} onClick={handleRetry}
                 style={{ background: sideColor }}>
           {t.end.retry}
+        </button>
+
+        <button className={s.shareBtn} onClick={handleShare}>
+          {shareCopied ? t.end.shareCopied : t.end.share}
         </button>
       </div>
     </div>
